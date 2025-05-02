@@ -1,9 +1,16 @@
-
+import { useContext, useState } from 'react';
+import { UserContext } from '../userContext';
 import { Navigate } from 'react-router-dom';
 
 function Login(){
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+    const userContext = useContext(UserContext); 
+
+    async function Login(e){
+        e.preventDefault();
+        userContext.setUserContext(data);
+    }
 
     return (
         <form onSubmit={Login}>

@@ -1,3 +1,5 @@
+import { useContext } from "react";
+import { UserContext } from "../userContext";
 import { NavLink } from "react-router-dom";
 
 function Header({ title }) {
@@ -10,24 +12,32 @@ function Header({ title }) {
                         <NavLink to="/">
                             Home
                         </NavLink>
-
-                        <NavLink to="/profile">
-                            Profile
-                        </NavLink>
-                        <NavLink to="/logout">
-                            Logout
-                        </NavLink>
-
-                        <NavLink to="/login">
-                            Login
-                        </NavLink>
-                        <NavLink to="/register">
-                            Register
-                        </NavLink>
-                </nav>
+                        <UserContext.Consumer>
+                            {context => (
+                                context.user ?
+                                    <>
+                                        <NavLink to="/profile">
+                                            Profile
+                                        </NavLink>
+                                        <NavLink to="/logout">
+                                            Logout
+                                        </NavLink>
+                                    </>
+                                    :
+                                    <>
+                                        <NavLink to="/login">
+                                            Login
+                                        </NavLink>
+                                        <NavLink to="/register">
+                                            Register
+                                        </NavLink>
+                                    </>
+                            )}
+                        </UserContext.Consumer>
+                    </nav>
+                </div>
             </div>
-        </div>
-        </header >
+        </header>
     );
 }
 

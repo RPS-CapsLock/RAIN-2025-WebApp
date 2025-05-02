@@ -1,7 +1,14 @@
-import { useEffect } from 'react';
+import { useEffect, useContext } from 'react';
+import { UserContext } from '../userContext';
 import { Navigate } from 'react-router-dom';
 
 function Logout(){
+    const userContext = useContext(UserContext); 
+    useEffect(function(){
+        const logout = async function(){
+            userContext.setUserContext(null);
+        }
+    }, []);
 
     return (
         <Navigate replace to="/" />
