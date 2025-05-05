@@ -8,6 +8,7 @@ function Logout(){
         const logout = async function(){
             userContext.setUserContext(null);
         }
+        logout();
     }, []);
 
     return (

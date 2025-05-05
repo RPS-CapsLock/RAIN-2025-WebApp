@@ -23,12 +23,12 @@ function App() {
         user: user,
         setUserContext: updateUserData
       }}>
-        <div>
+        <div className="bg-gray-900 min-h-screen text-blue-50">
           <Header 
             title="RAI Projekt"
           />
 
-          <main>
+          <main className="container mx-auto px-4 py-8">
             <Routes>
               <Route path="/" exact element={<Main />}></Route>
               <Route path="/login" exact element={<Login />}></Route>
