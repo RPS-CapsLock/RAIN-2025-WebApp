@@ -39,9 +39,11 @@ function Header({ title }) {
                                         <NavLink to="/logout" style={navButtonStyle} className="hover:bg-blue-600 hover:text-white">
                                             Logout
                                         </NavLink>
-                                        <NavLink to="/profile" style={navButtonStyle} className="hover:bg-blue-600 hover:text-white">
-                                            Dasboard
-                                        </NavLink>
+                                        {context.user.owner && (
+                                            <NavLink to="/dashboard" style={navButtonStyle} className="hover:bg-blue-600 hover:text-white">
+                                                Dashboard
+                                            </NavLink>
+                                        )}
                                     </>
                                     :
                                     <>
