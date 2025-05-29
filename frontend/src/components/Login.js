@@ -2,44 +2,72 @@ import { useContext, useState } from 'react';
 import { UserContext } from '../userContext';
 import { Navigate } from 'react-router-dom';
 
-function Login(){
-    const [username, setUsername] = useState("");
-    const [password, setPassword] = useState("");
-    const [error, setError] = useState("");
-    const userContext = useContext(UserContext); 
+function Login() {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const userContext = useContext(UserContext);
 
-    async function Login(e){
-        e.preventDefault();
-        const res = await fetch("http://localhost:3001/users/login", {
-            method: "POST",
-            credentials: "include",
-            headers: { 'Content-Type': 'application/json'},
-            body: JSON.stringify({
-                username: username,
-                password: password
-            })
-        });
-        const data = await res.json();
-        if(data._id !== undefined){
-            userContext.setUserContext(data);
-        } else {
-            setUsername("");
-            setPassword("");
-            setError("Invalid username or password");
-        }
+  async function handleLogin(e) {
+    e.preventDefault();
+    const res = await fetch("http://localhost:3001/users/login", {
+      method: "POST",
+      credentials: "include",
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password })
+    });
+    const data = await res.json();
+    if (data._id !== undefined) {
+      userContext.setUserContext(data);
+    } else {
+      setUsername("");
+      setPassword("");
+      setError("Neveljavno uporabniško ime ali geslo.");
     }
+  }
 
-    return (
-        <form onSubmit={Login} className="text-blue-50">
-            {userContext.user ? <Navigate replace to="/" /> : ""}
-            <input type="text" name="username" placeholder="Username" className="text-blue-50 border-1 border-indigo-500 rounded-lg mx-2"
-             value={username} onChange={(e)=>(setUsername(e.target.value))}/>
-             <input type="password" name="password" placeholder="Password" className="text-blue-50 border-1 border-indigo-500 rounded-lg mx-2"
-             value={password} onChange={(e)=>(setPassword(e.target.value))}/>
-             <input type="submit" name="submit" value="Log in" className="text-blue-50 border-1 border-indigo-500 rounded-lg mx-2"/>
-             <label className="text-blue-50">{error}</label>
-        </form>
-    );
+  return (
+    <div className="container py-5" style={{ minHeight: "80vh" }}>
+      <div className="row justify-content-center">
+        <div className="col-md-6">
+          <div className="card shadow p-4">
+            <h3 className="text-center mb-4" style={{ color: "#FF7A00" }}>Prijava</h3>
+            {userContext.user && <Navigate replace to="/profile" />}
+            <form onSubmit={handleLogin}>
+              <div className="mb-3">
+                <label htmlFor="username" className="form-label">Uporabniško ime</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  id="username"
+                  placeholder="Vnesi uporabniško ime"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  required
+                />
+              </div>
+              <div className="mb-3">
+                <label htmlFor="password" className="form-label">Geslo</label>
+                <input
+                  type="password"
+                  className="form-control"
+                  id="password"
+                  placeholder="Vnesi geslo"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
+              </div>
+              {error && <div className="alert alert-danger">{error}</div>}
+              <div className="d-grid">
+                <button type="submit" className="btn btn-warning btn-lg">Prijava</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 }
 
 export default Login;
