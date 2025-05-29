@@ -8,6 +8,9 @@ var userSchema = new Schema({
 	'email' : String,
 	'owner': { type: Boolean, default: false },
 	'registered' : { type: Date, default: Date.now },
+	'logs': [{
+		'dateTime': { type: Date, default: Date.now }
+	}]
 });
 
 userSchema.pre('save', function(next){
