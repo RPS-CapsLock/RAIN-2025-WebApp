@@ -16,7 +16,7 @@ var usersRouter = require('./routes/userRoutes');
 var app = express();
 
 var cors = require('cors');
-var allowedOrigins = ['http://localhost:3000', 'http://localhost:3001'];
+/* var allowedOrigins = ['http://localhost:3000', 'http://localhost:3001'];
 app.use(cors({
   credentials: true,
   origin: function(origin, callback){
@@ -27,7 +27,20 @@ app.use(cors({
     }
     return callback(null, true);
   }
+})); */
+var allowedOrigins = ['http://localhost:3000', 'http://localhost:3001', 'http://10.0.2.2:3001'];
+
+app.use(cors({
+  credentials: true,
+  origin: function(origin, callback){
+    if(!origin) return callback(null, true);
+    if(allowedOrigins.indexOf(origin)===-1){
+      return callback(new Error("CORS blocked for origin: " + origin), false);
+    }
+    return callback(null, true);
+  }
 }));
+
 
 app.use(logger('dev'));
 app.use(express.json());
