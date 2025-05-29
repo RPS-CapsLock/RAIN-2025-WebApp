@@ -13,6 +13,8 @@ var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
 var usersRouter = require('./routes/userRoutes');
+var drinkRoutes = require('./routes/drinkRoutes');
+var cocktailRoutes = require('./routes/cocktailRoutes');
 
 var app = express();
 
@@ -42,7 +44,6 @@ app.use(cors({
   }
 }));
 
-
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -64,6 +65,8 @@ app.use(function (req, res, next) {
 });
 
 app.use('/users', usersRouter);
+app.use('/drinks', drinkRoutes);
+app.use('/cocktails', cocktailRoutes);
 
 app.use(function(req, res, next) {
   next(createError(404));

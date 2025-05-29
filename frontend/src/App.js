@@ -9,6 +9,11 @@ import Logout from "./components/Logout";
 import Main from "./components/Main";
 import Footer from './components/Footer';
 
+import CocktailSelection from "./components/CocktailSelection";
+import CreateCocktail from "./components/CreateCocktail";
+import AddDrink from "./components/AddDrink";
+import AddCocktail from "./components/AddCocktail";
+
 function App() {
   const [user, setUser] = useState(localStorage.user ? JSON.parse(localStorage.user) : null);
 
@@ -36,6 +41,11 @@ function App() {
               <Route path="/register" element={<Register />}></Route>
               <Route path="/profile" element={<Profile />}></Route>
               <Route path="/logout" element={<Logout />}></Route>
+
+              <Route path="/cocktails" element={<CocktailSelection />} />
+              <Route path="/create-cocktail" element={<CreateCocktail />} />
+              <Route path="/add-drink" element={<AddDrink />} />
+              <Route path="/add-cocktail" element={<AddCocktail />} />
             </Routes>
           </main>
           <Footer/>
