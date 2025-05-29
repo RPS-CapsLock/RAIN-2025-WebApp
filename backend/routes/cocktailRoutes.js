@@ -1,0 +1,8 @@
+const express = require('express');
+const router = express.Router();
+const cocktailController = require('../controllers/cocktailController.js');
+
+router.get('/', cocktailController.list);
+router.post('/', cocktailController.create);
+
+module.exports = router;
