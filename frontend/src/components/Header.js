@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 function Header(props) {
     const context = useContext(UserContext);
 
-        return (
+    return (
         <header>
             <nav className="navbar navbar-expand-lg navbar-light" style={{ backgroundColor: "#fff", boxShadow: "0 4px 12px rgba(0, 0, 0, 0.05)" }}>
                 <div className="container">
@@ -31,22 +31,47 @@ function Header(props) {
                             {context.user ? (
                                 <>
                                     <li className="nav-item">
-                                        <Link className="nav-link" style={{ color: "#333", fontWeight: "500" }} to="/publish">Objavi sliko</Link>
+                                        <Link 
+                                            className="nav-link" 
+                                            style={{ color: "#333", fontWeight: "500" }} 
+                                            to="/cocktails">
+                                            Seznam koktajlov
+                                        </Link>
                                     </li>
                                     <li className="nav-item">
-                                        <Link className="nav-link" style={{ color: "#333", fontWeight: "500" }} to="/profile">Profil</Link>
+                                        <Link 
+                                            className="nav-link" 
+                                            style={{ color: "#333", fontWeight: "500" }} 
+                                            to="/profile">
+                                            Profil
+                                        </Link>
                                     </li>
                                     <li className="nav-item">
-                                        <Link className="nav-link" style={{ color: "#FF7A00", fontWeight: "600" }} to="/logout">Odjava</Link>
+                                        <Link 
+                                            className="nav-link" 
+                                            style={{ color: "#FF7A00", fontWeight: "600" }} 
+                                            to="/logout">
+                                            Odjava
+                                        </Link>
                                     </li>
                                 </>
                             ) : (
                                 <>
                                     <li className="nav-item">
-                                        <Link className="nav-link" style={{ color: "#333", fontWeight: "500" }} to="/login">Prijava</Link>
+                                        <Link 
+                                            className="nav-link" 
+                                            style={{ color: "#333", fontWeight: "500" }} 
+                                            to="/login">
+                                            Prijava
+                                        </Link>
                                     </li>
                                     <li className="nav-item">
-                                        <Link className="btn btn-warning ms-2" style={{ fontWeight: "500" }} to="/register">Registracija</Link>
+                                        <Link 
+                                            className="btn btn-warning ms-2" 
+                                            style={{ fontWeight: "500" }} 
+                                            to="/register">
+                                            Registracija
+                                        </Link>
                                     </li>
                                 </>
                             )}
