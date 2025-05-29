@@ -5,7 +5,9 @@ var Schema   = mongoose.Schema;
 var userSchema = new Schema({
 	'username' : String,
 	'password' : String,
-	'email' : String
+	'email' : String,
+	'owner': { type: Boolean, default: false },
+	'registered' : { type: Date, default: Date.now },
 });
 
 userSchema.pre('save', function(next){
