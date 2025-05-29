@@ -15,6 +15,8 @@ var userSchema = new Schema({
 
 userSchema.pre('save', function(next){
 	var user = this;
+	if (!user.isModified('password')) return next();
+
 	bcrypt.hash(user.password, 10, function(err, hash){
 		if(err){
 			return next(err);
@@ -24,8 +26,9 @@ userSchema.pre('save', function(next){
 	});
 });
 
+
 userSchema.statics.authenticate = function(username, password, callback){
-	User.findOne({ username: username })
+	User.findOne({username: username})
 	.exec(function(err, user){
 		if(err){
 			return callback(err);
@@ -34,21 +37,24 @@ userSchema.statics.authenticate = function(username, password, callback){
 			err.status = 401;
 			return callback(err);
 		} 
-
 		bcrypt.compare(password, user.password, function(err, result){
+			if(err) return callback(err);
+
 			if(result === true){
 				user.logs.push({ dateTime: new Date() });
-
-				user.save(function(saveErr) {
+				user.save(function(saveErr){
 					if(saveErr) return callback(saveErr);
 					return callback(null, user);
 				});
-			} else {
-				return callback();
+			} else{
+				var err = new Error("Incorrect password.");
+				err.status = 401;
+				return callback(err);
 			}
 		});
 	});
-};
+}
+
 
 var User = mongoose.model('user', userSchema);
 module.exports = User;
