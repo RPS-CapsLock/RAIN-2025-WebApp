@@ -7,6 +7,7 @@ import Register from "./components/Register";
 import Profile from "./components/Profile";
 import Logout from "./components/Logout";
 import Main from "./components/Main";
+import Dashboard from "./components/Dashboard";
 
 function App() {
   const [user, setUser] = useState(localStorage.user ? JSON.parse(localStorage.user) : null);
@@ -35,6 +36,7 @@ function App() {
               <Route path="/register" element={<Register />}></Route>
               <Route path="/profile" element={<Profile />}></Route>
               <Route path="/logout" element={<Logout />}></Route>
+              <Route path="/dashboard" element={<Dashboard />} />
             </Routes>
           </main>
         </div>
