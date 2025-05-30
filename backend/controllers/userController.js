@@ -30,7 +30,7 @@ module.exports = {
             .exec(function (err, user) {
                 if (err) {
                 console.error('Error fetching logs:', err);
-                return res.status(500).json({ message: "Error fetching logs", error: err });
+                return res.status(500).json({ message: "Error fetching logs", error: err.message || err });
                 }
 
                 if (!user) {
@@ -50,9 +50,10 @@ module.exports = {
             });
         } catch (ex) {
             console.error('Unexpected error in getMyLogs:', ex);
-            return res.status(500).json({ message: "Unexpected error", error: ex.toString() });
+            return res.status(500).json({ message: "Unexpected error", error: ex.message || ex.toString() });
         }
     },
+
 
 
     show: function (req, res) {

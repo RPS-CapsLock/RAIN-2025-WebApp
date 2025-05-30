@@ -5,6 +5,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
 var mongoose = require('mongoose');
+mongoose.set('strictQuery', false);
 var mongoDB = "mongodb://127.0.0.1/vaja4";
 mongoose.connect(mongoDB);
 mongoose.Promise = global.Promise;
