@@ -6,7 +6,7 @@ function Dashboard() {
   const [logs, setLogs] = useState([]);
 
   useEffect(() => {
-    fetch('/users/mylogs', {
+    fetch('http://localhost:3001/users/mylogs', {
       credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
     })
@@ -20,7 +20,6 @@ function Dashboard() {
 
   return (
     <div className="flex flex-col md:flex-row gap-6">
-      {/* Left side: Logs Table */}
       <div className="md:w-1/2 bg-gray-800 p-4 rounded-lg shadow">
         <h3 className="text-lg font-semibold mb-4">Login Logs</h3>
         {logs.length > 0 ? (
@@ -45,7 +44,6 @@ function Dashboard() {
         )}
       </div>
 
-      {/* Right side: Welcome */}
       <div className="md:w-1/2 bg-gray-800 p-4 rounded-lg shadow">
         <h2 className="text-xl font-bold mb-4">Dashboard</h2>
         <p>Welcome, {user?.username || 'Owner'}! This is your dashboard.</p>
