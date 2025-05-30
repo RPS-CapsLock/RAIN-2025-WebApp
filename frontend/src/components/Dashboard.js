@@ -26,6 +26,28 @@ function Dashboard() {
     return d;
   }
 
+  function getWeeklyData(logs) {
+    const startOfWeek = getStartOfWeek(new Date());
+    const counts = Array(7).fill(0);
+
+    logs.forEach(log => {
+      const logDate = new Date(log.dateTime);
+      if (logDate >= startOfWeek) {
+        const diffDays = Math.floor((logDate - startOfWeek) / (1000 * 60 * 60 * 24));
+        if (diffDays >= 0 && diffDays < 7) {
+          counts[diffDays]++;
+        }
+      }
+    });
+
+    const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+    return counts.map((count, index) => ({
+      day: dayNames[index],
+      count,
+    }));
+  }
+
   return (
     <div className="flex flex-col md:flex-row gap-6">
       <div className="md:w-1/2 bg-gray-800 p-4 rounded-lg shadow">
