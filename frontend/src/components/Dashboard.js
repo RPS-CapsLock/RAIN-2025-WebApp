@@ -18,6 +18,14 @@ function Dashboard() {
       .catch(err => console.error(err));
   }, []);
 
+  function getStartOfWeek(date) {
+    const d = new Date(date);
+    const day = d.getDay();
+    d.setHours(0, 0, 0, 0);
+    d.setDate(d.getDate() - day);
+    return d;
+  }
+
   return (
     <div className="flex flex-col md:flex-row gap-6">
       <div className="md:w-1/2 bg-gray-800 p-4 rounded-lg shadow">
