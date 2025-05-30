@@ -48,6 +48,8 @@ function Dashboard() {
     }));
   }
 
+  const weeklyData = getWeeklyData(logs);
+
   return (
     <div className="flex flex-col md:flex-row gap-6">
       <div className="md:w-1/2 bg-gray-800 p-4 rounded-lg shadow">
