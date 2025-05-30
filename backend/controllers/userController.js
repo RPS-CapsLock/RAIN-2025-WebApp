@@ -15,6 +15,10 @@ module.exports = {
         });
     },
 
+    getMyLogs: function (req, res, next) {
+
+    },
+
     show: function (req, res) {
         var id = req.params.id;
 
