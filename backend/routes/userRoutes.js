@@ -14,4 +14,6 @@ router.put('/:id', userController.update);
 
 router.delete('/:id', userController.remove);
 
+router.get('/mylogs', userController.getMyLogs);
+
 module.exports = router;
