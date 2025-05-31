@@ -1,5 +1,8 @@
 import { useContext, useEffect, useState } from 'react';
 import { UserContext } from '../userContext';
+import {
+  BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer,
+} from 'recharts';
 
 function Dashboard() {
   const { user } = useContext(UserContext);
@@ -18,14 +21,16 @@ function Dashboard() {
       .catch(err => console.error(err));
   }, []);
 
+  // Get start of current week (Sunday)
   function getStartOfWeek(date) {
     const d = new Date(date);
-    const day = d.getDay();
+    const day = d.getDay(); // Sunday=0
     d.setHours(0, 0, 0, 0);
     d.setDate(d.getDate() - day);
     return d;
   }
 
+  // Transform logs to counts per day this week
   function getWeeklyData(logs) {
     const startOfWeek = getStartOfWeek(new Date());
     const counts = Array(7).fill(0);
@@ -50,7 +55,7 @@ function Dashboard() {
 
   const weeklyData = getWeeklyData(logs);
 
-return (
+  return (
     <div className="flex flex-col md:flex-row gap-6">
       <div className="md:w-1/2 bg-gray-800 p-4 rounded-lg shadow">
         <h3 className="text-lg font-semibold mb-4">Login Logs</h3>
