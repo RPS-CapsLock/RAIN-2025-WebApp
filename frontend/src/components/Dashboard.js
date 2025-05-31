@@ -50,7 +50,7 @@ function Dashboard() {
 
   const weeklyData = getWeeklyData(logs);
 
-  return (
+return (
     <div className="flex flex-col md:flex-row gap-6">
       <div className="md:w-1/2 bg-gray-800 p-4 rounded-lg shadow">
         <h3 className="text-lg font-semibold mb-4">Login Logs</h3>
@@ -75,10 +75,23 @@ function Dashboard() {
           <p>No logs available.</p>
         )}
       </div>
-
-      <div className="md:w-1/2 bg-gray-800 p-4 rounded-lg shadow">
+      <div className="md:w-1/2 bg-gray-800 p-4 rounded-lg shadow flex flex-col">
         <h2 className="text-xl font-bold mb-4">Dashboard</h2>
-        <p>Welcome, {user?.username || 'Owner'}! This is your dashboard.</p>
+        <p className="mb-6">Welcome, {user?.username || 'Owner'}! This is your dashboard.</p>
+
+        <h3 className="text-lg font-semibold mb-4">Logins This Week</h3>
+        <ResponsiveContainer width="100%" height={250}>
+          <BarChart data={weeklyData} margin={{ top: 10, right: 20, bottom: 10, left: 0 }}>
+            <CartesianGrid strokeDasharray="3 3" stroke="#444" />
+            <XAxis dataKey="day" stroke="#ddd" />
+            <YAxis allowDecimals={false} stroke="#ddd" />
+            <Tooltip
+              contentStyle={{ backgroundColor: '#222', borderColor: '#555' }}
+              itemStyle={{ color: '#fff' }}
+            />
+            <Bar dataKey="count" fill="#4ade80" />
+          </BarChart>
+        </ResponsiveContainer>
       </div>
     </div>
   );
