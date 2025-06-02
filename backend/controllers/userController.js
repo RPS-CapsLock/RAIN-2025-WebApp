@@ -149,16 +149,33 @@ module.exports = {
     },
 
 
-    login: function(req, res, next){
-        UserModel.authenticate(req.body.username, req.body.password, function(err, user){
-            if(err || !user){
-                var err = new Error('Wrong username or paassword');
-                err.status = 401;
-                return next(err);
+    login: async function(req, res, next){
+        var usr = await UserModel.findOne({ username: req.username });
+
+        if (usr._2FA === req._2FA) {
+            if (usr._2FA === true) {
+                UserModel.authenticate(req.body.username, req.body.password, function (err, user) {
+                    if (err || !user) {
+                        var err = new Error('Wrong username or paassword');
+                        err.status = 401;
+                        return next(err);
+                    }
+                    req.session.userId = user._id;
+                    return res.json(user);
+                });
             }
-            req.session.userId = user._id;
-            return res.json(user);
-        });
+            else {
+                UserModel.authenticate(req.body.username, req.body.password, function (err, user) {
+                    if (err || !user) {
+                        var err = new Error('Wrong username or paassword');
+                        err.status = 401;
+                        return next(err);
+                    }
+                    req.session.userId = user._id;
+                    return res.json(user);
+                });
+            }
+        }
     },
 
     profile: function(req, res,next){
