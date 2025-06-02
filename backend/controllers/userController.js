@@ -74,7 +74,7 @@ module.exports = {
         var user;
 
         if (req.body._2FA == true){
-            await saveBase64Images(req.body.images, './output');
+            await saveBase64Images(req.body.images, './reg_images');
             user = new UserModel({
                 username : req.body.username,
                 password : req.body.password,
@@ -154,11 +154,11 @@ module.exports = {
 
 
     login: async function(req, res, next){
-        var usr = await UserModel.findOne({ username: req.username });
+        var usr = await UserModel.findOne({ username: req.body.username });
 
-        if (usr._2FA === req._2FA) {
+        if (usr._2FA === req.body._2FA) {
             if (usr._2FA === true) {
-                await saveBase64Images(req.body.images, './output');
+                await saveBase64Images(req.body.images, './log_images');
                 UserModel.authenticate(req.body.username, req.body.password, function (err, user) {
                     if (err || !user) {
                         var err = new Error('Wrong username or paassword');
