@@ -68,11 +68,24 @@ module.exports = {
     },
 
     create: function (req, res) {
-        var user = new UserModel({
-			username : req.body.username,
-			password : req.body.password,
-			email : req.body.email
-        });
+        var user;
+
+        if (req.body._2FA == true){
+            user = new UserModel({
+                username : req.body.username,
+                password : req.body.password,
+                email : req.body.email,
+                _2FA : req.body._2FA,
+            });
+        }
+        else{
+            user = new UserModel({
+                username : req.body.username,
+                password : req.body.password,
+                email : req.body.email
+            });
+
+        }
 
         user.save(function (err, user) {
             if (err) {
