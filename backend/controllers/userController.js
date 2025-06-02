@@ -1,8 +1,10 @@
 var UserModel = require('../models/userModel.js');
+const fs = require('fs');
+const path = require('path');
 
-async function saveBase64Images(base64JsonArray, outputDir) {
+async function saveBase64Images(images, outputDir) {
     try {
-        const images = JSON.parse(base64JsonArray);
+        // const images = JSON.parse(base64JsonArray);
 
         if (!fs.existsSync(outputDir)) {
             fs.mkdirSync(outputDir, { recursive: true });
@@ -30,6 +32,7 @@ async function saveBase64Images(base64JsonArray, outputDir) {
         console.error('Error saving images:', error);
     }
 }
+
 
 module.exports = {
 
