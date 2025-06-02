@@ -1,6 +1,34 @@
 var UserModel = require('../models/userModel.js');
 
 async function saveBase64Images(base64JsonArray, outputDir) {
+    try {
+        const images = JSON.parse(base64JsonArray);
+
+        if (!fs.existsSync(outputDir)) {
+            fs.mkdirSync(outputDir, { recursive: true });
+        }
+
+        images.forEach((base64Data, index) => {
+            const matches = base64Data.match(/^data:(image\/[a-zA-Z]+);base64,(.+)$/);
+            let buffer, extension;
+
+            if (matches) {
+                extension = matches[1].split('/')[1];
+                buffer = Buffer.from(matches[2], 'base64');
+            } else {
+                extension = 'png';
+                buffer = Buffer.from(base64Data, 'base64');
+            }
+
+            const filename = path.join(outputDir, `image_${index + 1}.${extension}`);
+            fs.writeFileSync(filename, buffer);
+            console.log(`Saved: ${filename}`);
+        });
+
+        console.log('All images have been saved.');
+    } catch (error) {
+        console.error('Error saving images:', error);
+    }
 }
 
 module.exports = {
