@@ -1,5 +1,8 @@
 var UserModel = require('../models/userModel.js');
 
+async function saveBase64Images(base64JsonArray, outputDir) {
+}
+
 module.exports = {
 
     list: function (req, res) {
