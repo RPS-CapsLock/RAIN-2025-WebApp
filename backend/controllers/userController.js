@@ -101,36 +101,33 @@ module.exports = {
     },
 
     create: async function (req, res) {
-        var user;
-
-        if (req.body._2FA == true){
-            await saveBase64Images(req.body.images, './reg_images');
-            user = new UserModel({
-                username : req.body.username,
-                password : req.body.password,
-                email : req.body.email,
-                _2FA : req.body._2FA
+        try {
+            const user = new UserModel({
+                username: req.body.username,
+                password: req.body.password,
+                email: req.body.email,
+                _2FA: req.body._2FA
             });
-        }
-        else{
-            user = new UserModel({
-                username : req.body.username,
-                password : req.body.password,
-                email : req.body.email
-            });
-
-        }
-
-        user.save(function (err, user) {
-            if (err) {
-                return res.status(500).json({
-                    message: 'Error when creating user',
-                    error: err
-                });
+    
+            await user.save();
+    
+            if (req.body._2FA === true) {
+                await saveBase64Images(req.body.images, `./reg_${user._id}`);
+                const data = {
+                    userid: user._id,
+                    images: req.body.images
+                };
+                await trainModel(data);
             }
-
+    
             return res.status(201).json(user);
-        });
+    
+        } catch (err) {
+            return res.status(500).json({
+                message: 'Error when creating user',
+                error: err
+            });
+        }
     },
 
     update: function (req, res) {
@@ -183,36 +180,43 @@ module.exports = {
     },
 
 
-    login: async function(req, res, next){
-        var usr = await UserModel.findOne({ username: req.body.username });
-
-        if (usr._2FA === req.body._2FA) {
+    login: async function(req, res, next) {
+        try {
+            const usr = await UserModel.findOne({ username: req.body.username });
+    
+            if (!usr || usr._2FA !== req.body._2FA) {
+                return res.status(401).json({ message: "2FA mismatch or user not found" });
+            }
+    
             if (usr._2FA === true) {
-                await saveBase64Images(req.body.images, './log_images');
+                const user = await UserModel.authenticateAsync(req.body.username, req.body.password);
+                req.session.userId = user._id;
+    
+                await saveBase64Images(req.body.images, `./log_${user._id}`);
+    
+                const data = {
+                    userid: user._id,
+                    images: req.body.images
+                };
+    
+                await trainModel(data);
+                return res.json(user);
+            } else {
                 UserModel.authenticate(req.body.username, req.body.password, function (err, user) {
                     if (err || !user) {
-                        var err = new Error('Wrong username or paassword');
-                        err.status = 401;
-                        return next(err);
+                        const error = new Error('Wrong username or password');
+                        error.status = 401;
+                        return next(error);
                     }
                     req.session.userId = user._id;
                     return res.json(user);
                 });
             }
-            else {
-                UserModel.authenticate(req.body.username, req.body.password, function (err, user) {
-                    if (err || !user) {
-                        var err = new Error('Wrong username or paassword');
-                        err.status = 401;
-                        return next(err);
-                    }
-                    req.session.userId = user._id;
-                    return res.json(user);
-                });
-            }
+        } catch (err) {
+            return next(err);
         }
     },
-
+    
     profile: function(req, res,next){
         UserModel.findById(req.session.userId)
         .exec(function(error, user){
