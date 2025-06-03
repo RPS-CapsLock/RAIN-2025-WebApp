@@ -1,6 +1,7 @@
 var UserModel = require('../models/userModel.js');
 const fs = require('fs');
 const path = require('path');
+const axios = require('axios');
 
 async function saveBase64Images(images, outputDir) {
     try {
@@ -33,6 +34,20 @@ async function saveBase64Images(images, outputDir) {
     }
 }
 
+async function trainModel(data) {
+    try {
+        const response = await axios.post('http://localhost:5000/train', data, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        console.log('API response:', response.data);
+        return response.data;
+    } catch (error) {
+        console.error('Error sending POST:', error.response?.data || error.message);
+        throw error;
+    }
+}
 
 module.exports = {
 
