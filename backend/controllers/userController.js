@@ -49,6 +49,21 @@ async function trainModel(data) {
     }
 }
 
+async function useModel(data) {
+    try {
+        const response = await axios.post('http://localhost:5000/verify', data, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        console.log('API response:', response.data);
+        return response.data;
+    } catch (error) {
+        console.error('Error sending POST:', error.response?.data || error.message);
+        throw error;
+    }
+}
+
 module.exports = {
 
     list: function (req, res) {
