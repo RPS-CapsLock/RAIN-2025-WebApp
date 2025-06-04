@@ -5,7 +5,8 @@ var Schema   = mongoose.Schema;
 var userSchema = new Schema({
 	'username' : String,
 	'password' : String,
-	'email' : String
+	'email' : String,
+	'_2FA' : { type: Boolean, default: false}
 });
 
 userSchema.pre('save', function(next){
@@ -39,6 +40,16 @@ userSchema.statics.authenticate = function(username, password, callback){
 		 
 	});
 }
+
+userSchema.statics.authenticateAsync = async function(username, password) {
+    const user = await this.findOne({ username }).exec();
+    if (!user) throw new Error("User not found");
+
+    const result = await bcrypt.compare(password, user.password);
+    if (!result) throw new Error("Incorrect password");
+
+    return user;
+};
 
 var User = mongoose.model('user', userSchema);
 module.exports = User;

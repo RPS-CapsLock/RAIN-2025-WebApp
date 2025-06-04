@@ -15,7 +15,8 @@ function Register() {
             body: JSON.stringify({
                 email: email,
                 username: username,
-                password: password
+                password: password,
+                _2FA: false
             })
         });
         const data = await res.json();
