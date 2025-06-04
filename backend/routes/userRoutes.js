@@ -5,6 +5,7 @@ var userController = require('../controllers/userController.js');
 router.get('/', userController.list);
 router.get('/profile', userController.profile);
 router.get('/logout', userController.logout);
+router.get('/mylogs', userController.getMyLogs);
 router.get('/:id', userController.show);
 
 router.post('/', userController.create);

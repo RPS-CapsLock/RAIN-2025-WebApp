@@ -54,6 +54,47 @@ module.exports = {
         });
     },
 
+    getMyLogs: function (req, res, next) {
+        try {
+            console.log('GET /users/mylogs called');
+            console.log('Session userId:', req.session.userId);
+
+            if (!req.session.userId) {
+            console.log('No userId in session - user not logged in');
+            return res.status(401).json({ message: "Not logged in" });
+            }
+
+            UserModel.findById(req.session.userId)
+            .select('logs owner')
+            .exec(function (err, user) {
+                if (err) {
+                console.error('Error fetching logs:', err);
+                return res.status(500).json({ message: "Error fetching logs", error: err.message || err });
+                }
+
+                if (!user) {
+                console.log('User not found for ID:', req.session.userId);
+                return res.status(404).json({ message: "User not found" });
+                }
+
+                console.log('User owner flag:', user.owner);
+                console.log('User logs:', user.logs);
+
+                if (!user.owner) {
+                console.log('Access denied: user is not owner');
+                return res.status(403).json({ message: "Access denied: not an owner" });
+                }
+
+                return res.json(user.logs);
+            });
+        } catch (ex) {
+            console.error('Unexpected error in getMyLogs:', ex);
+            return res.status(500).json({ message: "Unexpected error", error: ex.message || ex.toString() });
+        }
+    },
+
+
+
     show: function (req, res) {
         var id = req.params.id;
 
