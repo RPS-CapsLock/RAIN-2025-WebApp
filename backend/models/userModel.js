@@ -6,8 +6,7 @@ var userSchema = new Schema({
 	'username' : String,
 	'password' : String,
 	'email' : String,
-	'_2FA' : { type: Boolean, default: false},
-	'model' : { type: String, default: "" }
+	'_2FA' : { type: Boolean, default: false}
 });
 
 userSchema.pre('save', function(next){
