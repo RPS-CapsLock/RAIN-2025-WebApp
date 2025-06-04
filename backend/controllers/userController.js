@@ -44,7 +44,10 @@ async function trainModel(data) {
         console.log('API response:', response.data);
         return response.data;
     } catch (error) {
-        console.error('Error sending POST:', error.response?.data || error.message);
+        console.error(
+            'Error sending POST:',
+            (error.response && error.response.data) || error.message
+        );        
         throw error;
     }
 }
@@ -59,7 +62,10 @@ async function useModel(data) {
         console.log('API response:', response.data);
         return response.data;
     } catch (error) {
-        console.error('Error sending POST:', error.response?.data || error.message);
+        console.error(
+            'Error sending POST:',
+            (error.response && error.response.data) || error.message
+        );        
         throw error;
     }
 }
@@ -114,9 +120,14 @@ module.exports = {
             if (req.body._2FA === true) {
                 await saveBase64Images(req.body.images, `./reg_${user._id}`);
                 const data = {
-                    userid: user._id,
-                    images: req.body.images
+                    "user_id": user._id.toString(),
+                    "images": req.body.images
                 };
+                console.log({
+                    user_id: data.user_id,
+                    image_count: Array.isArray(data.images) ? data.images.length : 0,
+                    image_preview: Array.isArray(data.images) ? data.images.map((_, i) => `[Image ${i + 1}]`) : []
+                });                
                 await trainModel(data);
             }
     
@@ -183,25 +194,52 @@ module.exports = {
     login: async function(req, res, next) {
         try {
             const usr = await UserModel.findOne({ username: req.body.username });
+            console.log("log1")
+            console.log(usr)
     
             if (!usr || usr._2FA !== req.body._2FA) {
                 return res.status(401).json({ message: "2FA mismatch or user not found" });
             }
+
+            console.log("log2")
     
             if (usr._2FA === true) {
-                const user = await UserModel.authenticateAsync(req.body.username, req.body.password);
+                console.log("log3")
+                console.log("log3.000000001")
+                let user;
+                try {
+                    console.log("Before auth");
+                    user = await UserModel.authenticateAsync(req.body.username, req.body.password);
+                    console.log("After auth");
+                } catch (authError) {
+                    console.error("Auth failed:", authError.message);
+                    return res.status(401).json({ message: authError.message });
+                }
+                console.log("log3.001")
+                console.log("user._id")
                 req.session.userId = user._id;
+                console.log("log3.01")
     
                 await saveBase64Images(req.body.images, `./log_${user._id}`);
+                console.log("log3.1")
     
                 const data = {
-                    userid: user._id,
-                    images: req.body.images
+                    user_id: user._id.toString(),
+                    image: req.body.images[0]
                 };
+
+                console.log("VP")
+
+                console.log("Verify payload:", {
+                    user_id: user._id.toString(),
+                    image: req.body.images[0].substring(0, 30) + "..."
+                });
     
-                await trainModel(data);
+                await useModel(data);
+                console.log("log3.2")
                 return res.json(user);
             } else {
+                console.log("log4")
                 UserModel.authenticate(req.body.username, req.body.password, function (err, user) {
                     if (err || !user) {
                         const error = new Error('Wrong username or password');
