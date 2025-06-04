@@ -6,22 +6,29 @@ function Register() {
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
 
-  async function handleRegister(e) {
-    e.preventDefault();
-    const res = await fetch("http://localhost:3001/users", {
-      method: 'POST',
-      credentials: 'include',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, username, password })
-    });
-    const data = await res.json();
-    if (data._id !== undefined) {
-      window.location.href = "/";
-    } else {
-      setUsername("");
-      setPassword("");
-      setEmail("");
-      setError("Registracija ni uspela. Poskusi znova.");
+    async function Register(e){
+        e.preventDefault();
+        const res = await fetch("http://localhost:3001/users", {
+            method: 'POST',
+            credentials: 'include',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                email: email,
+                username: username,
+                password: password,
+                _2FA: false
+            })
+        });
+        const data = await res.json();
+        if(data._id !== undefined){
+            window.location.href="/";
+        }
+        else{
+            setUsername("");
+            setPassword("");
+            setEmail("");
+            setError("Registration failed");
+        }
     }
   }
 

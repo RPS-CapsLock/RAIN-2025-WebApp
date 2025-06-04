@@ -7,22 +7,26 @@ function Login() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const userContext = useContext(UserContext);
-
-  async function handleLogin(e) {
-    e.preventDefault();
-    const res = await fetch("http://localhost:3001/users/login", {
-      method: "POST",
-      credentials: "include",
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username, password })
-    });
-    const data = await res.json();
-    if (data._id !== undefined) {
-      userContext.setUserContext(data);
-    } else {
-      setUsername("");
-      setPassword("");
-      setError("Neveljavno uporabniško ime ali geslo.");
+    async function Login(e){
+        e.preventDefault();
+        const res = await fetch("http://localhost:3001/users/login", {
+            method: "POST",
+            credentials: "include",
+            headers: { 'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                username: username,
+                password: password,
+                _2FA: false
+            })
+        });
+        const data = await res.json();
+        if(data._id !== undefined){
+            userContext.setUserContext(data);
+        } else {
+            setUsername("");
+            setPassword("");
+            setError("Invalid username or password");
+        }
     }
   }
 

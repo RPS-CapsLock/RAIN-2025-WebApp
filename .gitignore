@@ -4,3 +4,8 @@ backend/node_modules/
 .env.local
 .env.*.local
 .DS_Store
+backend/output
+backend/reg_images
+backend/log_images
+reg_*/
+log_*/

@@ -5,11 +5,19 @@ var Schema   = mongoose.Schema;
 var userSchema = new Schema({
 	'username' : String,
 	'password' : String,
-	'email' : String
+	'email' : String,
+  '_2FA' : { type: Boolean, default: false},
+	'owner': { type: Boolean, default: false },
+	'registered' : { type: Date, default: Date.now },
+	'logs': [{
+		'dateTime': { type: Date, default: Date.now }
+	}]
 });
 
 userSchema.pre('save', function(next){
 	var user = this;
+	if (!user.isModified('password')) return next();
+
 	bcrypt.hash(user.password, 10, function(err, hash){
 		if(err){
 			return next(err);
@@ -18,6 +26,7 @@ userSchema.pre('save', function(next){
 		next();
 	});
 });
+
 
 userSchema.statics.authenticate = function(username, password, callback){
 	User.findOne({username: username})
@@ -30,13 +39,20 @@ userSchema.statics.authenticate = function(username, password, callback){
 			return callback(err);
 		} 
 		bcrypt.compare(password, user.password, function(err, result){
+			if(err) return callback(err);
+
 			if(result === true){
-				return callback(null, user);
+				user.logs.push({ dateTime: new Date() });
+				user.save(function(saveErr){
+					if(saveErr) return callback(saveErr);
+					return callback(null, user);
+				});
 			} else{
-				return callback();
+				var err = new Error("Incorrect password.");
+				err.status = 401;
+				return callback(err);
 			}
 		});
-		 
 	});
 }
 
