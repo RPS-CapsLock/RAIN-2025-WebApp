@@ -1,64 +1,84 @@
 import { useContext } from "react";
 import { UserContext } from "../userContext";
-import { NavLink } from "react-router-dom";
+import { Link } from "react-router-dom";
 
-function Header({ title }) {
-    const navButtonStyle = ({ isActive }) => ({
-        padding: '0.5rem 1rem',
-        margin: '0 0.5rem',
-        borderRadius: '0.375rem',
-        fontWeight: '500',
-        transition: 'all 0.2s ease',
-        backgroundColor: isActive ? '#3b82f6' : '#1f2937',
-        color: isActive ? '#ffffff' : '#e5e7eb',
-        border: isActive ? '1px solid #3b82f6' : '1px solid #374151',
-        textDecoration: 'none',
-        display: 'inline-block',
-        '&:hover': {
-          backgroundColor: '#3b82f6',
-          color: '#ffffff',
-        }
-    });
+function Header(props) {
+    const context = useContext(UserContext);
 
     return (
-        <header className="bg-gray-800 border-b border-gray-200 shadow-sm text-blue-50">
-            <div className="container mx-auto px-4 py-4">
-                <h1 className="text-2xl font-bold mb-4">{title}</h1>
-                <div className="flex flex-wrap items-center justify-between">
-                    <nav className="space-x-4 mb-2 md:mb-0">
-                        <NavLink to="/" style={navButtonStyle} className="hover:bg-blue-600 hover:text-white">
-                            Home
-                        </NavLink>
-                        <UserContext.Consumer>
-                            {context => (
-                                context.user ?
-                                    <>
-                                        <NavLink to="/profile" style={navButtonStyle} className="hover:bg-blue-600 hover:text-white">
-                                            Profile
-                                        </NavLink>
-                                        <NavLink to="/logout" style={navButtonStyle} className="hover:bg-blue-600 hover:text-white">
-                                            Logout
-                                        </NavLink>
-                                        {context.user.owner && (
-                                            <NavLink to="/dashboard" style={navButtonStyle} className="hover:bg-blue-600 hover:text-white">
-                                                Dashboard
-                                            </NavLink>
-                                        )}
-                                    </>
-                                    :
-                                    <>
-                                        <NavLink to="/login" style={navButtonStyle} className="hover:bg-blue-600 hover:text-white">
-                                            Login
-                                        </NavLink>
-                                        <NavLink to="/register" style={navButtonStyle} className="hover:bg-blue-600 hover:text-white">
-                                            Register
-                                        </NavLink>
-                                    </>
+        <header>
+            <nav className="navbar navbar-expand-lg navbar-light" style={{ backgroundColor: "#fff", boxShadow: "0 4px 12px rgba(0, 0, 0, 0.05)" }}>
+                <div className="container">
+                    <Link className="navbar-brand fw-bold" style={{ color: "#FF7A00", fontSize: "1.5rem" }} to="/">
+                        {props.title}
+                    </Link>
+                    <button
+                        className="navbar-toggler"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#navbarNav"
+                        aria-controls="navbarNav"
+                        aria-expanded="false"
+                        aria-label="Toggle navigation"
+                    >
+                        <span className="navbar-toggler-icon"></span>
+                    </button>
+                    <div className="collapse navbar-collapse" id="navbarNav">
+                        <ul className="navbar-nav ms-auto">
+                            <li className="nav-item">
+                                <Link className="nav-link" style={{ color: "#333", fontWeight: "500" }} to="/">Domov</Link>
+                            </li>
+                            {context.user ? (
+                                <>
+                                    <li className="nav-item">
+                                        <Link 
+                                            className="nav-link" 
+                                            style={{ color: "#333", fontWeight: "500" }} 
+                                            to="/cocktails">
+                                            Seznam koktajlov
+                                        </Link>
+                                    </li>
+                                    <li className="nav-item">
+                                        <Link 
+                                            className="nav-link" 
+                                            style={{ color: "#333", fontWeight: "500" }} 
+                                            to="/profile">
+                                            Profil
+                                        </Link>
+                                    </li>
+                                    <li className="nav-item">
+                                        <Link 
+                                            className="nav-link" 
+                                            style={{ color: "#FF7A00", fontWeight: "600" }} 
+                                            to="/logout">
+                                            Odjava
+                                        </Link>
+                                    </li>
+                                </>
+                            ) : (
+                                <>
+                                    <li className="nav-item">
+                                        <Link 
+                                            className="nav-link" 
+                                            style={{ color: "#333", fontWeight: "500" }} 
+                                            to="/login">
+                                            Prijava
+                                        </Link>
+                                    </li>
+                                    <li className="nav-item">
+                                        <Link 
+                                            className="btn btn-warning ms-2" 
+                                            style={{ fontWeight: "500" }} 
+                                            to="/register">
+                                            Registracija
+                                        </Link>
+                                    </li>
+                                </>
                             )}
-                        </UserContext.Consumer>
-                    </nav>
+                        </ul>
+                    </div>
                 </div>
-            </div>
+            </nav>
         </header>
     );
 }

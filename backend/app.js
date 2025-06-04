@@ -1,3 +1,4 @@
+require('dotenv').config();
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
@@ -5,14 +6,15 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
 var mongoose = require('mongoose');
-mongoose.set('strictQuery', false);
-var mongoDB = "mongodb://127.0.0.1/vaja4";
+var mongoDB = process.env.MONGODB_URI;  // mongodb://127.0.0.1/vaja4
 mongoose.connect(mongoDB);
 mongoose.Promise = global.Promise;
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
 var usersRouter = require('./routes/userRoutes');
+var drinkRoutes = require('./routes/drinkRoutes');
+var cocktailRoutes = require('./routes/cocktailRoutes');
 
 var app = express();
 
@@ -42,7 +44,6 @@ app.use(cors({
   }
 }));
 
-
 app.use(logger('dev'));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
@@ -65,6 +66,8 @@ app.use(function (req, res, next) {
 });
 
 app.use('/users', usersRouter);
+app.use('/drinks', drinkRoutes);
+app.use('/cocktails', cocktailRoutes);
 
 app.use(function(req, res, next) {
   next(createError(404));

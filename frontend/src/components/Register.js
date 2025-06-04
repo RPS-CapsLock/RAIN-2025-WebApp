@@ -1,10 +1,10 @@
 import { useState } from 'react';
 
 function Register() {
-    const [username, setUsername] = useState([]);
-    const [password, setPassword] = useState([]);
-    const [email, setEmail] = useState([]);
-    const [error, setError] = useState([]);
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("");
+  const [error, setError] = useState("");
 
     async function Register(e){
         e.preventDefault();
@@ -30,16 +30,61 @@ function Register() {
             setError("Registration failed");
         }
     }
+  }
 
-    return(
-        <form className="text-blue-50" onSubmit={Register}>
-            <input className="text-blue-50 border-1 border-indigo-500 rounded-lg mx-2" type="text" name="email" placeholder="Email" value={email} onChange={(e)=>(setEmail(e.target.value))} />
-            <input className="text-blue-50 border-1 border-indigo-500 rounded-lg mx-2" type="text" name="username" placeholder="Username" value={username} onChange={(e)=>(setUsername(e.target.value))}/>
-            <input className="text-blue-50 border-1 border-indigo-500 rounded-lg mx-2" type="password" name="password" placeholder="Password" value={password} onChange={(e)=>(setPassword(e.target.value))} />
-            <input className="text-blue-50 border-1 border-indigo-500 rounded-lg mx-2" type="submit" name="submit" value="Login" />
-            <label className="text-blue-50 border-1 border-indigo-500 rounded-lg mx-2">{error}</label>
-        </form>
-    );
+  return (
+    <div className="container py-5" style={{ minHeight: "80vh" }}>
+      <div className="row justify-content-center">
+        <div className="col-md-6">
+          <div className="card shadow p-4">
+            <h3 className="text-center mb-4" style={{ color: "#FF7A00" }}>Registracija</h3>
+            <form onSubmit={handleRegister}>
+              <div className="mb-3">
+                <label htmlFor="email" className="form-label">Email</label>
+                <input
+                  type="email"
+                  className="form-control"
+                  id="email"
+                  placeholder="Vnesi email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
+              </div>
+              <div className="mb-3">
+                <label htmlFor="username" className="form-label">Uporabniško ime</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  id="username"
+                  placeholder="Vnesi uporabniško ime"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  required
+                />
+              </div>
+              <div className="mb-3">
+                <label htmlFor="password" className="form-label">Geslo</label>
+                <input
+                  type="password"
+                  className="form-control"
+                  id="password"
+                  placeholder="Vnesi geslo"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
+              </div>
+              {error && <div className="alert alert-danger">{error}</div>}
+              <div className="d-grid">
+                <button type="submit" className="btn btn-warning btn-lg">Registracija</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 }
 
 export default Register;

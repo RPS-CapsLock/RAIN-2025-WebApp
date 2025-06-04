@@ -7,6 +7,12 @@ import Register from "./components/Register";
 import Profile from "./components/Profile";
 import Logout from "./components/Logout";
 import Main from "./components/Main";
+import Footer from './components/Footer';
+
+import CocktailSelection from "./components/CocktailSelection";
+import CreateCocktail from "./components/CreateCocktail";
+import AddDrink from "./components/AddDrink";
+import AddCocktail from "./components/AddCocktail";
 import Dashboard from "./components/Dashboard";
 
 function App() {
@@ -24,21 +30,29 @@ function App() {
         user: user,
         setUserContext: updateUserData
       }}>
-        <div className="bg-gray-900 min-h-screen text-blue-50">
+        <div>
           <Header 
-            title="RAI Projekt"
+            title="CocktailBox"
           />
 
-          <main className="container mx-auto px-4 py-8">
+          <main>
             <Routes>
               <Route path="/" exact element={<Main />}></Route>
               <Route path="/login" exact element={<Login />}></Route>
               <Route path="/register" element={<Register />}></Route>
               <Route path="/profile" element={<Profile />}></Route>
               <Route path="/logout" element={<Logout />}></Route>
+
+
+              <Route path="/cocktails" element={<CocktailSelection />} />
+              <Route path="/create-cocktail" element={<CreateCocktail />} />
+              <Route path="/add-drink" element={<AddDrink />} />
+              <Route path="/add-cocktail" element={<AddCocktail />} />
+                
               <Route path="/dashboard" element={<Dashboard />} />
             </Routes>
           </main>
+          <Footer/>
         </div>
       </UserContext.Provider>
     </BrowserRouter>
