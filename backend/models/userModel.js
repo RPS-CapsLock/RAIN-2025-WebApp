@@ -6,6 +6,7 @@ var userSchema = new Schema({
 	'username' : String,
 	'password' : String,
 	'email' : String,
+  '_2FA' : { type: Boolean, default: false},
 	'owner': { type: Boolean, default: false },
 	'registered' : { type: Date, default: Date.now },
 	'logs': [{
@@ -54,7 +55,6 @@ userSchema.statics.authenticate = function(username, password, callback){
 		});
 	});
 }
-
 
 var User = mongoose.model('user', userSchema);
 module.exports = User;
