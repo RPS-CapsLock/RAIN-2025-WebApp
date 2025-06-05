@@ -31,12 +31,21 @@ function Header(props) {
                             {context.user ? (
                                 <>
                                     <li className="nav-item">
-                                        <Link 
-                                            className="nav-link" 
-                                            style={{ color: "#333", fontWeight: "500" }} 
-                                            to="/cocktails">
-                                            Seznam koktajlov
-                                        </Link>
+                                        {context.user.owner ? ( // <-- preverimo če je owner
+                                            <Link 
+                                                className="nav-link" 
+                                                style={{ color: "#333", fontWeight: "500" }} 
+                                                to="/dashboard">
+                                                Dashboard
+                                            </Link>
+                                        ) : (
+                                            <Link 
+                                                className="nav-link" 
+                                                style={{ color: "#333", fontWeight: "500" }} 
+                                                to="/cocktails">
+                                                Seznam koktajlov
+                                            </Link>
+                                        )}
                                     </li>
                                     <li className="nav-item">
                                         <Link 

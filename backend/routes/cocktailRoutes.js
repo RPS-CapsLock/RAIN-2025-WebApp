@@ -4,5 +4,6 @@ const cocktailController = require('../controllers/cocktailController.js');
 
 router.get('/', cocktailController.list);
 router.post('/', cocktailController.create);
+router.delete('/:id', cocktailController.remove);
 
 module.exports = router;

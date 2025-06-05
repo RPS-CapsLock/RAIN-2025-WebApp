@@ -6,29 +6,27 @@ function Register() {
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
 
-    async function Register(e){
-        e.preventDefault();
-        const res = await fetch("http://localhost:3001/users", {
-            method: 'POST',
-            credentials: 'include',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                email: email,
-                username: username,
-                password: password,
-                _2FA: false
-            })
-        });
-        const data = await res.json();
-        if(data._id !== undefined){
-            window.location.href="/";
-        }
-        else{
-            setUsername("");
-            setPassword("");
-            setEmail("");
-            setError("Registration failed");
-        }
+  async function handleRegister(e) {
+    e.preventDefault();
+    const res = await fetch("http://localhost:3001/users", {
+      method: 'POST',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: email,
+        username: username,
+        password: password,
+        _2FA: false
+      })
+    });
+    const data = await res.json();
+    if (data._id !== undefined) {
+      window.location.href = "/login";
+    } else {
+      setUsername("");
+      setPassword("");
+      setEmail("");
+      setError("Registration failed");
     }
   }
 
@@ -38,7 +36,7 @@ function Register() {
         <div className="col-md-6">
           <div className="card shadow p-4">
             <h3 className="text-center mb-4" style={{ color: "#FF7A00" }}>Registracija</h3>
-            <form onSubmit={handleRegister}>
+            <form onSubmit={handleRegister}> {/* ⬅️ popravljeno ime tukaj */}
               <div className="mb-3">
                 <label htmlFor="email" className="form-label">Email</label>
                 <input
