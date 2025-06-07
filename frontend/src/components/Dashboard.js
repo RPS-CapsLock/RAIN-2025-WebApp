@@ -10,6 +10,7 @@ function Dashboard() {
   const [logs, setLogs] = useState([]);
   const [cocktails, setCocktails] = useState([]);
   const [drinks, setDrinks] = useState([]);
+  const [paketniki, setPaketniki] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -33,6 +34,14 @@ function Dashboard() {
     fetch('http://localhost:3001/drinks')
       .then(res => res.json())
       .then(data => setDrinks(data))
+      .catch(err => console.error(err));
+
+    fetch('http://localhost:3001/paketniki/my-paketniki', {
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+    })
+      .then(res => res.json())
+      .then(data => setPaketniki(data))
       .catch(err => console.error(err));
   };
 
@@ -72,7 +81,7 @@ function Dashboard() {
     try {
       const res = await fetch(`http://localhost:3001/cocktails/${id}`, { method: 'DELETE' });
       if (res.ok) {
-        fetchData(); // Osvežimo podatke
+        fetchData();
       } else {
         console.error('Napaka pri brisanju koktejla.');
       }
@@ -85,9 +94,24 @@ function Dashboard() {
     try {
       const res = await fetch(`http://localhost:3001/drinks/${id}`, { method: 'DELETE' });
       if (res.ok) {
-        fetchData(); // Osvežimo podatke
+        fetchData();
       } else {
         console.error('Napaka pri brisanju pijače.');
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const deletePaketnik = async (id) => {
+    try {
+      const res = await fetch(`http://localhost:3001/paketniki/${id}`, {
+        method: 'DELETE',
+      });
+      if (res.ok) {
+        fetchData();
+      } else {
+        console.error('Napaka pri brisanju paketnika.');
       }
     } catch (err) {
       console.error(err);
@@ -100,6 +124,7 @@ function Dashboard() {
 
       {/* Tables */}
       <div className="mb-20">
+        {/* Cocktails */}
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold text-orange-500">Seznam koktejlov</h2>
           <button 
@@ -131,6 +156,7 @@ function Dashboard() {
           </tbody>
         </table>
 
+        {/* Drinks */}
         <div className="flex justify-between items-center mb-6 mt-20">
           <h2 className="text-2xl font-bold text-orange-500">Seznam pijač</h2>
           <button 
@@ -163,6 +189,75 @@ function Dashboard() {
             ))}
           </tbody>
         </table>
+
+        {/* Paketniki */}
+        <div className="flex justify-between items-center mb-6 mt-20">
+          <h2 className="text-2xl font-bold text-orange-500">Seznam paketnikov</h2>
+          <button 
+            className="btn btn-warning"
+            onClick={() => navigate('/add-paketnik')}>
+            ➕ Dodaj nov paketnik
+          </button>
+        </div>
+        <table className="table table-striped w-full mb-20">
+          <thead>
+            <tr>
+              <th>Številka</th>
+              <th>Lokacija</th>
+              <th>Status</th>
+              <th>Akcije</th>
+            </tr>
+          </thead>
+          <tbody>
+            {paketniki.map(paketnik => (
+              <tr key={paketnik._id}>
+                <td>{paketnik.number}</td>
+                <td>{paketnik.location}</td>
+                <td>{paketnik.status}</td>
+                <td>
+                  <button className="btn btn-danger btn-sm" onClick={() => deletePaketnik(paketnik._id)}>
+                    Briši
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+
+        {/* Paketnik Logs */}
+        <div className="mt-20">
+          <h2 className="text-2xl font-bold text-orange-500 mb-6">Logi paketnikov</h2>
+          {paketniki.length > 0 ? (
+            <table className="table table-striped w-full">
+              <thead>
+                <tr>
+                  <th>Številka Paketnika</th>
+                  <th>Datum</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {paketniki.flatMap(paketnik => (
+                  paketnik.open_logs.map((log, index) => (
+                    <tr key={`${paketnik._id}-${index}`}>
+                      <td>{paketnik.number}</td>
+                      <td>{new Date(log.dateTime).toLocaleString()}</td>
+                      <td style={{
+                        color: log.status === 'failed' ? 'red' :
+                              log.status === 'opened' ? 'green' :
+                              'gray'
+                      }}>
+                        {log.status}
+                      </td>
+                    </tr>
+                  ))
+                ))}
+              </tbody>
+            </table>
+          ) : (
+            <p className="text-gray-500">Ni logov za prikaz.</p>
+          )}
+        </div>
       </div>
 
       {/* Logs Section */}
@@ -183,7 +278,6 @@ function Dashboard() {
           )}
         </div>
 
-        {/* Login Logs Chart */}
         <div className="bg-white p-8 rounded-lg shadow-lg">
           <h2 className="text-2xl font-bold mb-8 text-orange-500">Logini ta teden</h2>
           <ResponsiveContainer width="100%" height={300}>
@@ -198,12 +292,6 @@ function Dashboard() {
               <Bar dataKey="count" fill="#FF7A00" />
             </BarChart>
           </ResponsiveContainer>
-        </div>
-
-        {/* Paketniki Log Placeholder */}
-        <div className="bg-white p-8 rounded-lg shadow-lg md:col-span-2 mt-16">
-          <h2 className="text-2xl font-bold mb-8 text-orange-500">Log paketnikov</h2>
-          <p className="text-gray-500">Podatki še niso na voljo.</p>
         </div>
       </div>
     </div>
