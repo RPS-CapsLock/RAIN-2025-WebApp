@@ -9,3 +9,4 @@ backend/reg_images
 backend/log_images
 reg_*/
 log_*/
+firebase-adminsdk.json
