@@ -54,7 +54,17 @@ userSchema.statics.authenticate = function(username, password, callback){
 			}
 		});
 	});
-}
+};
+
+userSchema.statics.authenticateAsync = async function(username, password) {
+    const user = await this.findOne({ username }).exec();
+    if (!user) throw new Error("User not found");
+
+    const result = await bcrypt.compare(password, user.password);
+    if (!result) throw new Error("Incorrect password");
+
+    return user;
+};
 
 var User = mongoose.model('user', userSchema);
 module.exports = User;

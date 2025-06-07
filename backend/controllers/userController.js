@@ -8,7 +8,8 @@ async function trainModel(data) {
         const response = await axios.post('http://localhost:5000/train', data, {
             headers: {
                 'Content-Type': 'application/json'
-            }
+            },
+            timeout: 10 * 60 * 1000
         });
         console.log('API response:', response.data);
         return response.data;
@@ -26,7 +27,8 @@ async function useModel(data) {
         const response = await axios.post('http://localhost:5000/verify', data, {
             headers: {
                 'Content-Type': 'application/json'
-            }
+            },
+            timeout: 10 * 60 * 1000
         });
         console.log('API response:', response.data);
         return response.data;
@@ -132,11 +134,7 @@ module.exports = {
                     "user_id": user._id.toString(),
                     "images": req.body.images
                 };
-                console.log({
-                    user_id: data.user_id,
-                    image_count: Array.isArray(data.images) ? data.images.length : 0,
-                    image_preview: Array.isArray(data.images) ? data.images.map((_, i) => `[Image ${i + 1}]`) : []
-                });                
+             
                 await trainModel(data);
             }
     
@@ -223,8 +221,18 @@ module.exports = {
                     image: req.body.images[0]
                 };
     
-                await useModel(data);
-                return res.json(user);
+                const verify = await useModel(data);
+                if (verify.verified === true){
+                    return res.json(user);
+                }
+                else {
+                    const errData = {
+                        _id : "",
+                        username : "",
+                        password : ""
+                    }
+                    return res.json(errData);
+                }
             } else {
                 UserModel.authenticate(req.body.username, req.body.password, function (err, user) {
                     if (err || !user) {
