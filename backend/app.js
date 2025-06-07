@@ -6,7 +6,8 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
 var mongoose = require('mongoose');
-var mongoDB = process.env.MONGODB_URI;  // mongodb://127.0.0.1/vaja4
+//var mongoDB = process.env.MONGODB_URI;  // mongodb://127.0.0.1/vaja4
+var mongoDB = "mongodb+srv://janmilosic:jadztuk2003@cluster0.hl0dmtd.mongodb.net/cocktailBox?retryWrites=true&w=majority&appName=Cluster0"
 mongoose.connect(mongoDB);
 mongoose.Promise = global.Promise;
 var db = mongoose.connection;

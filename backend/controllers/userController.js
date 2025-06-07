@@ -268,5 +268,34 @@ module.exports = {
                 }
             });
         }
+    },
+
+    c_2FA: function (req, res, next) {
+        if (req.session && req.session.userId) {
+            UserModel.findById(req.session.userId, function (error, user) {
+                if (error) {
+                    return next(error);
+                }
+                if (!user) {
+                    const err = new Error('Not authorized, go back!');
+                    err.status = 400;
+                    return next(err);
+                }
+    
+                user._2FA = !user._2FA;
+    
+                user.save(function (saveError) {
+                    if (saveError) {
+                        return next(saveError);
+                    }
+                    return res.json({ _2FA: user._2FA });
+                });
+            });
+        } else {
+            const err = new Error('No active session');
+            err.status = 401;
+            return next(err);
+        }
     }
+    
 };
