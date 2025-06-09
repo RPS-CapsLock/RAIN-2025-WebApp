@@ -14,6 +14,7 @@ import CreateCocktail from "./components/CreateCocktail";
 import AddDrink from "./components/AddDrink";
 import AddCocktail from "./components/AddCocktail";
 import Dashboard from "./components/Dashboard";
+import AddPaketnik from './components/AddPaketnik';
 
 function App() {
   const [user, setUser] = useState(localStorage.user ? JSON.parse(localStorage.user) : null);
@@ -50,6 +51,7 @@ function App() {
               <Route path="/add-cocktail" element={<AddCocktail />} />
                 
               <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/add-paketnik" element={<AddPaketnik />} />
             </Routes>
           </main>
           <Footer/>

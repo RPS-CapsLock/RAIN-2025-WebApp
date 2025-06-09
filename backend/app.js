@@ -16,6 +16,9 @@ db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 var usersRouter = require('./routes/userRoutes');
 var drinkRoutes = require('./routes/drinkRoutes');
 var cocktailRoutes = require('./routes/cocktailRoutes');
+var notificationRoutes = require('./routes/notificationRoutes');
+var faceidRoutes = require('./routes/faceidRoutes');
+var paketnikRoutes = require('./routes/paketnikRoutes');
 
 var app = express();
 
@@ -69,6 +72,9 @@ app.use(function (req, res, next) {
 app.use('/users', usersRouter);
 app.use('/drinks', drinkRoutes);
 app.use('/cocktails', cocktailRoutes);
+app.use('/notifications', notificationRoutes);
+app.use('/faceid', faceidRoutes);
+app.use('/paketniki', paketnikRoutes);
 
 app.use(function(req, res, next) {
   next(createError(404));
