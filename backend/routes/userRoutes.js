@@ -6,6 +6,7 @@ router.get('/', userController.list);
 router.get('/profile', userController.profile);
 router.get('/logout', userController.logout);
 router.get('/mylogs', userController.getMyLogs);
+router.get('/c_2fa', userController.c_2FA);
 router.get('/:id', userController.show);
 
 router.post('/', userController.create);

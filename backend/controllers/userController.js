@@ -3,12 +3,16 @@ const fs = require('fs');
 const path = require('path');
 const axios = require('axios');
 
+//const PyAPI = "http://localhost:5000"
+const PyAPI = "http://host.docker.internal:5000"
+
 async function trainModel(data) {
     try {
-        const response = await axios.post('http://localhost:5000/train', data, {
+        const response = await axios.post(`${PyAPI}/train`, data, {
             headers: {
                 'Content-Type': 'application/json'
-            }
+            },
+            timeout: 10 * 60 * 1000
         });
         console.log('API response:', response.data);
         return response.data;
@@ -23,10 +27,11 @@ async function trainModel(data) {
 
 async function useModel(data) {
     try {
-        const response = await axios.post('http://localhost:5000/verify', data, {
+        const response = await axios.post(`${PyAPI}/verify`, data, {
             headers: {
                 'Content-Type': 'application/json'
-            }
+            },
+            timeout: 10 * 60 * 1000
         });
         console.log('API response:', response.data);
         return response.data;
@@ -132,11 +137,7 @@ module.exports = {
                     "user_id": user._id.toString(),
                     "images": req.body.images
                 };
-                console.log({
-                    user_id: data.user_id,
-                    image_count: Array.isArray(data.images) ? data.images.length : 0,
-                    image_preview: Array.isArray(data.images) ? data.images.map((_, i) => `[Image ${i + 1}]`) : []
-                });                
+             
                 await trainModel(data);
             }
     
@@ -223,8 +224,19 @@ module.exports = {
                     image: req.body.images[0]
                 };
     
-                await useModel(data);
-                return res.json(user);
+                const verify = await useModel(data);
+                if (verify.verified === true){
+                    return res.json(user);
+                }
+                else {
+                    const errData = {
+                        _id : "",
+                        username : "",
+                        password : "",
+                        email : ""
+                    }
+                    return res.json(errData);
+                }
             } else {
                 UserModel.authenticate(req.body.username, req.body.password, function (err, user) {
                     if (err || !user) {
@@ -268,5 +280,34 @@ module.exports = {
                 }
             });
         }
+    },
+
+    c_2FA: function (req, res, next) {
+        if (req.session && req.session.userId) {
+            UserModel.findById(req.session.userId, function (error, user) {
+                if (error) {
+                    return next(error);
+                }
+                if (!user) {
+                    const err = new Error('Not authorized, go back!');
+                    err.status = 400;
+                    return next(err);
+                }
+    
+                user._2FA = !user._2FA;
+    
+                user.save(function (saveError) {
+                    if (saveError) {
+                        return next(saveError);
+                    }
+                    return res.json({ _2FA: user._2FA });
+                });
+            });
+        } else {
+            const err = new Error('No active session');
+            err.status = 401;
+            return next(err);
+        }
     }
+    
 };
