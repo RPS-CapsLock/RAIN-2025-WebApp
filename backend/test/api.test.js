@@ -50,6 +50,6 @@ describe('API Endpoint Tests (Safe Routes Only)', () => {
         expect(res.body).to.be.an('array');
         done();
       });
-  });
+  }); // get
 
 });

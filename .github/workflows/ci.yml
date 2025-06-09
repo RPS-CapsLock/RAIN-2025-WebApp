@@ -29,7 +29,5 @@ jobs:
 
       - name: Deploy (restart app)
         run: |
-          npm install -g pm2
-          pm2 delete app || true
-          pm2 start app.js --name app
+          npm test
 
