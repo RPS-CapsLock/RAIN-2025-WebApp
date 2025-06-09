@@ -3,9 +3,12 @@ const fs = require('fs');
 const path = require('path');
 const axios = require('axios');
 
+//const PyAPI = "http://localhost:5000"
+const PyAPI = "http://host.docker.internal:5000"
+
 async function trainModel(data) {
     try {
-        const response = await axios.post('http://localhost:5000/train', data, {
+        const response = await axios.post(`${PyAPI}/train`, data, {
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -24,7 +27,7 @@ async function trainModel(data) {
 
 async function useModel(data) {
     try {
-        const response = await axios.post('http://localhost:5000/verify', data, {
+        const response = await axios.post(`${PyAPI}/verify`, data, {
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -229,7 +232,8 @@ module.exports = {
                     const errData = {
                         _id : "",
                         username : "",
-                        password : ""
+                        password : "",
+                        email : ""
                     }
                     return res.json(errData);
                 }

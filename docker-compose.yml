@@ -1,0 +1,13 @@
+version: '3.8'
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./backend/output:/usr/src/app/output
+    environment:
+      - NODE_ENV=development
+    restart: unless-stopped
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
