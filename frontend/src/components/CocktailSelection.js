@@ -1,9 +1,11 @@
-import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // <-- Dodaj za preusmeritev
+import { useEffect, useState, useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { UserContext } from '../userContext';
 
 function CocktailSelection() {
   const [cocktails, setCocktails] = useState([]);
-  const navigate = useNavigate(); // Hook za navigacijo
+  const navigate = useNavigate();
+  const { user } = useContext(UserContext);
 
   useEffect(() => {
     fetch('http://localhost:3001/cocktails')
@@ -13,16 +15,21 @@ function CocktailSelection() {
   }, []);
 
   const addToCart = (cocktailId) => {
+    if (!user) {
+      alert("Najprej se prijavite.");
+      return;
+    }
+
     fetch('http://localhost:3001/cart/add', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ cocktailId })
+      body: JSON.stringify({ userId: user._id, cocktailId })
     })
-    .then(res => res.json())
-    .then(data => {
-      alert('Koktejl uspešno dodan v košarico!');
-    })
-    .catch(err => console.error('Napaka pri dodajanju v košarico:', err));
+      .then(res => res.json())
+      .then(data => {
+        alert('Koktejl uspešno dodan v košarico!');
+      })
+      .catch(err => console.error('Napaka pri dodajanju v košarico:', err));
   };
 
   const goToCreateCocktail = () => {

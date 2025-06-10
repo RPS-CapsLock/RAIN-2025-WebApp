@@ -15,6 +15,9 @@ import AddDrink from "./components/AddDrink";
 import AddCocktail from "./components/AddCocktail";
 import Dashboard from "./components/Dashboard";
 import AddPaketnik from './components/AddPaketnik';
+import Cart from "./components/Cart";
+import Checkout from "./components/Checkout";
+
 
 function App() {
   const [user, setUser] = useState(localStorage.user ? JSON.parse(localStorage.user) : null);
@@ -26,39 +29,38 @@ function App() {
 
 
   return (
-    <BrowserRouter>
-      <UserContext.Provider value={{
-        user: user,
-        setUserContext: updateUserData
-      }}>
-        <div>
-          <Header 
-            title="CocktailBox"
-          />
+  <BrowserRouter>
+    <UserContext.Provider value={{
+      user: user,
+      setUserContext: updateUserData
+    }}>
+      <div className="d-flex flex-column min-vh-100">
+        <Header title="CocktailBox" />
 
-          <main>
-            <Routes>
-              <Route path="/" exact element={<Main />}></Route>
-              <Route path="/login" exact element={<Login />}></Route>
-              <Route path="/register" element={<Register />}></Route>
-              <Route path="/profile" element={<Profile />}></Route>
-              <Route path="/logout" element={<Logout />}></Route>
+        <main className="flex-grow-1">
+          <Routes>
+            <Route path="/" exact element={<Main />} />
+            <Route path="/login" exact element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/logout" element={<Logout />} />
+            <Route path="/cocktails" element={<CocktailSelection />} />
+            <Route path="/create-cocktail" element={<CreateCocktail />} />
+            <Route path="/add-drink" element={<AddDrink />} />
+            <Route path="/add-cocktail" element={<AddCocktail />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/add-paketnik" element={<AddPaketnik />} />
+            <Route path="/cart" element={<Cart />} />
+            <Route path="/checkout" element={<Checkout />} />
+          </Routes>
+        </main>
 
+        <Footer />
+      </div>
+    </UserContext.Provider>
+  </BrowserRouter>
+);
 
-              <Route path="/cocktails" element={<CocktailSelection />} />
-              <Route path="/create-cocktail" element={<CreateCocktail />} />
-              <Route path="/add-drink" element={<AddDrink />} />
-              <Route path="/add-cocktail" element={<AddCocktail />} />
-                
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/add-paketnik" element={<AddPaketnik />} />
-            </Routes>
-          </main>
-          <Footer/>
-        </div>
-      </UserContext.Provider>
-    </BrowserRouter>
-  );
 }
 
 export default App;
