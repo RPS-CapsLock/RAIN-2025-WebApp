@@ -24,7 +24,12 @@ function Login() {
     });
     const data = await res.json();
     if (data._id !== undefined) {
-      userContext.setUserContext(data);
+      if (data._id === "0000000000"){
+        
+      }
+      else{
+        userContext.setUserContext(data);
+      }
     } else {
       setUsername("");
       setPassword("");

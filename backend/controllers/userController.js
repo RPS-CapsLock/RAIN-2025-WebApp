@@ -2,9 +2,14 @@ var UserModel = require('../models/userModel.js');
 const fs = require('fs');
 const path = require('path');
 const axios = require('axios');
+const admin = require('../firebase');
 
-//const PyAPI = "http://localhost:5000"
-const PyAPI = "http://host.docker.internal:5000"
+const PyAPI = "http://localhost:5000"
+//const PyAPI = "http://host.docker.internal:5000"
+
+//man2
+
+var tmp_user = {};
 
 async function trainModel(data) {
     try {
@@ -43,6 +48,23 @@ async function useModel(data) {
         throw error;
     }
 }
+
+function waitForAuthorization(timeoutMs = 10*60*1000, intervalMs = 500) {
+    return new Promise((resolve) => {
+        const start = Date.now();
+        const interval = setInterval(() => {
+            console.log("checkong auth: ", tmp_user.authorized)
+            if (tmp_user.authorized !== undefined) {
+                clearInterval(interval);
+                resolve(tmp_user.authorized);
+            } else if (Date.now() - start > timeoutMs) {
+                clearInterval(interval);
+                resolve(false);
+            }
+        }, intervalMs);
+    });
+}
+
 
 module.exports = {
 
@@ -123,12 +145,24 @@ module.exports = {
 
     create: async function (req, res) {
         try {
-            const user = new UserModel({
-                username: req.body.username,
-                password: req.body.password,
-                email: req.body.email,
-                _2FA: req.body._2FA
-            });
+            var user;
+            if (req.body.fcmToken){
+                user = new UserModel({
+                    username: req.body.username,
+                    password: req.body.password,
+                    email: req.body.email,
+                    _2FA: req.body._2FA,
+                    fcmToken: req.body.fcmToken
+                });
+            }
+            else{
+                user = new UserModel({
+                    username: req.body.username,
+                    password: req.body.password,
+                    email: req.body.email,
+                    _2FA: req.body._2FA
+                });
+            }
     
             await user.save();
     
@@ -205,8 +239,8 @@ module.exports = {
         try {
             const usr = await UserModel.findOne({ username: req.body.username });
     
-            if (!usr || usr._2FA !== req.body._2FA) {
-                return res.status(401).json({ message: "2FA mismatch or user not found" });
+            if (!usr) {
+                return res.status(401).json({ message: "user not found" });
             }
     
             if (usr._2FA === true) {
@@ -218,7 +252,55 @@ module.exports = {
                     return res.status(401).json({ message: authError.message });
                 }
                 req.session.userId = user._id;
-    
+
+                console.log("usingPhoneApp:", req.body.usingPhoneApp)
+
+                if (req.body.usingPhoneApp !== true && usr.fcmToken) {
+                    const message = {
+                        notification: {
+                            title: "Face Verification",
+                            body: "Please verify your face to complete login."
+                        },
+                        token: usr.fcmToken
+                    };
+
+                    try {
+                        await admin.messaging().send(message);
+                        console.log("Push notification sent to:", usr.username);
+                    } catch (fcmErr) {
+                        console.error("Failed to send FCM push:", fcmErr);
+                    }
+
+                    tmp_user = user;
+                    tmp_user.authorized = undefined;
+
+                    console.log("waiting for auth")
+
+                    await waitForAuthorization();
+
+                    console.log("auth: ", tmp_user.authorized)
+
+                    // const errData = {
+                    //     _id : "00000000000",
+                    //     username : "waiting_for_images",
+                    //     password : "000000",
+                    //     email : "000000"
+                    // }
+
+                    const errData = {
+                        _id : "",
+                        username : "",
+                        password : "",
+                        email : ""
+                    }
+
+                    if (tmp_user.authorized === true){
+                        return res.json(user);
+                    }
+                    
+                    return res.json(errData);
+                }
+
                 const data = {
                     user_id: user._id.toString(),
                     image: req.body.images[0]
@@ -252,6 +334,49 @@ module.exports = {
             return next(err);
         }
     },
+
+    login_2fa: async function(req, res, next){
+        const data = {
+            user_id: tmp_user._id.toString(),
+            image: req.body.images[0]
+        };
+
+        const verify = await useModel(data);
+        if (verify.verified === true){
+            tmp_user.authorized = true;
+            return res.json(tmp_user);
+        }
+        else {
+            tmp_user.authorized = false;
+            const errData = {
+                _id : "",
+                username : "",
+                password : "",
+                email : ""
+            }
+            return res.json(errData);
+        }
+    },
+
+    // login_2fa0: async function(req, res, next){
+    //     var tmp_user0 = tmp_user;
+    //     while (tmp_user0.authorized === false){
+    //         tmp_user0 = tmp_user;
+    //     }
+
+    //     if (tmp_user.authorized === true){
+    //         return res.json(tmp_user);
+    //     }
+    //     else {
+    //         const errData = {
+    //             _id : "",
+    //             username : "",
+    //             password : "",
+    //             email : ""
+    //         }
+    //         return res.json(errData);
+    //     }
+    // },
     
     profile: function(req, res,next){
         UserModel.findById(req.session.userId)

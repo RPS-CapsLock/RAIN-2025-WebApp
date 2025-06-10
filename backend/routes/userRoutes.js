@@ -11,6 +11,8 @@ router.get('/:id', userController.show);
 
 router.post('/', userController.create);
 router.post('/login', userController.login);
+router.post('/login_2fa', userController.login_2fa);
+// router.post('/login_2fa0', userController.login_2fa0);
 
 router.put('/:id', userController.update);
 
