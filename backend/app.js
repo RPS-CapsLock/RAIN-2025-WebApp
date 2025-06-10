@@ -19,6 +19,7 @@ var cocktailRoutes = require('./routes/cocktailRoutes');
 var notificationRoutes = require('./routes/notificationRoutes');
 var faceidRoutes = require('./routes/faceidRoutes');
 var paketnikRoutes = require('./routes/paketnikRoutes');
+var cartRoutes = require('./routes/cartRoutes');
 
 var app = express();
 
@@ -75,6 +76,7 @@ app.use('/cocktails', cocktailRoutes);
 app.use('/notifications', notificationRoutes);
 app.use('/faceid', faceidRoutes);
 app.use('/paketniki', paketnikRoutes);
+app.use('/cart', cartRoutes);
 
 app.use(function(req, res, next) {
   next(createError(404));
