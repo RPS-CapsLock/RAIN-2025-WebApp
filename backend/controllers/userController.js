@@ -4,8 +4,8 @@ const path = require('path');
 const axios = require('axios');
 const admin = require('../firebase');
 
-const PyAPI = "http://localhost:5000"
-//const PyAPI = "http://host.docker.internal:5000"
+//const PyAPI = "http://localhost:5000"
+const PyAPI = "http://host.docker.internal:5000"
 
 //man2
 
