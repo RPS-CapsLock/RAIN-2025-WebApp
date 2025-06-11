@@ -7,7 +7,7 @@ const admin = require('../firebase');
 //const PyAPI = "http://localhost:5000"
 const PyAPI = "http://host.docker.internal:5000"
 
-//man2
+//man
 
 var tmp_user = {};
 
