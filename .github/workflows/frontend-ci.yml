@@ -31,10 +31,11 @@ jobs:
       - name: Build app
         run: npm run build
 
-      - name: Docker login (Windows-safe)
-        shell: bash
+      - name: Docker login (univerzalno)
         run: |
-          echo "${{ secrets.DOCKER_FRONTEND_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_FRONTEND_USERNAME }}" --password-stdin
+          $pass = "${{ secrets.DOCKER_FRONTEND_PASSWORD }}"
+          $pass | docker login -u "${{ secrets.DOCKER_FRONTEND_USERNAME }}" --password-stdin
+        shell: powershell
 
       - name: Build Docker image
         run: docker build -t janmilosic/paketnik-frontend-app:latest .
