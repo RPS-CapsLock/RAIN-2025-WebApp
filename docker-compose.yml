@@ -11,3 +11,12 @@ services:
     restart: unless-stopped
     extra_hosts:
       - "host.docker.internal:host-gateway"
+  frontend:
+      build: ./frontend
+      ports:
+        - "3000:80"
+      restart: unless-stopped
+      depends_on:
+        - backend
+      env_file:
+        - ./frontend/.env.docker
