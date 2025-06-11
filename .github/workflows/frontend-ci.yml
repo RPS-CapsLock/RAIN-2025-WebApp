@@ -31,11 +31,13 @@ jobs:
       - name: Build app
         run: npm run build
 
-      - name: Docker login (univerzalno)
+      - name: Docker login (PowerShell z datoteko)
         run: |
           $pass = "${{ secrets.DOCKER_FRONTEND_PASSWORD }}"
-          $pass | docker login -u "${{ secrets.DOCKER_FRONTEND_USERNAME }}" --password-stdin
+          $pass | Out-File -Encoding ascii -FilePath token.txt
+          docker login -u "${{ secrets.DOCKER_FRONTEND_USERNAME }}" --password-stdin < token.txt
         shell: powershell
+
 
       - name: Build Docker image
         run: docker build -t janmilosic/paketnik-frontend-app:latest .
