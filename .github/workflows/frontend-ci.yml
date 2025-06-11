@@ -31,12 +31,10 @@ jobs:
       - name: Build app
         run: npm run build
 
-      - name: Docker login
+      - name: Docker login (Windows-safe)
+        shell: bash
         run: |
-          mkdir -p ~/.docker
           echo "${{ secrets.DOCKER_FRONTEND_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_FRONTEND_USERNAME }}" --password-stdin
-        env:
-          HOME: /home/runner
 
       - name: Build Docker image
         run: docker build -t janmilosic/paketnik-frontend-app:latest .
