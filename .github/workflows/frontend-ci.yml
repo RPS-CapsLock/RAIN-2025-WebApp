@@ -12,7 +12,6 @@ jobs:
     defaults:
       run:
         working-directory: frontend
-
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
@@ -31,12 +30,8 @@ jobs:
       - name: Build app
         run: npm run build
 
-      - name: Docker login (PowerShell delujoče)
-        run: |
-          $token = "${{ secrets.DOCKER_FRONTEND_PASSWORD }}"
-          Set-Content -Path "docker_token.txt" -Value $token -Encoding ASCII
-          Get-Content -Raw -Path "docker_token.txt" | docker login -u "${{ secrets.DOCKER_FRONTEND_USERNAME }}" --password-stdin
-        shell: powershell
+      - name: Docker login
+        run: echo "${{ secrets.DOCKER_FRONTEND_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_FRONTEND_USERNAME }}" --password-stdin
 
       - name: Build Docker image
         run: docker build -t janmilosic/paketnik-frontend-app:latest .
