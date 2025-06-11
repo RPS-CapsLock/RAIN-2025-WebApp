@@ -39,11 +39,6 @@ npm start
 - Uporabnik lahko izbere obstoječi koktajl ali ustvari svojega.
 - Po potrditvi naročila prejme obvestilo, ko je naročilo pripravljeno.
 
-### 4. Prevzem iz Paketnika
-- Na podlagi obvestila uporabnik dostopa do QR kode.
-- Skenira kodo na paketniku in sistem preveri avtentičnost.
-- Ob uspešni verifikaciji se paketnik avtomatsko odpre.
-
 ---
 
 ## Lokalno testiranje in razvoj
