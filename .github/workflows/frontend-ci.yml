@@ -12,6 +12,7 @@ jobs:
     defaults:
       run:
         working-directory: frontend
+
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
@@ -31,7 +32,11 @@ jobs:
         run: npm run build
 
       - name: Docker login
-        run: echo "${{ secrets.DOCKER_FRONTEND_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_FRONTEND_USERNAME }}" --password-stdin
+        run: |
+          mkdir -p ~/.docker
+          echo "${{ secrets.DOCKER_FRONTEND_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_FRONTEND_USERNAME }}" --password-stdin
+        env:
+          HOME: /home/runner
 
       - name: Build Docker image
         run: docker build -t janmilosic/paketnik-frontend-app:latest .
