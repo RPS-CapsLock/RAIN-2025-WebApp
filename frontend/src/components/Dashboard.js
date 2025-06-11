@@ -6,7 +6,6 @@ import {
 import { useNavigate } from 'react-router-dom';
 
 function Dashboard() {
-  const { user } = useContext(UserContext);
   const [logs, setLogs] = useState([]);
   const [cocktails, setCocktails] = useState([]);
   const [drinks, setDrinks] = useState([]);
