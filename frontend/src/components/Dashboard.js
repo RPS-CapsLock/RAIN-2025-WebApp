@@ -1,5 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
-import { UserContext } from '../userContext';
+import { useEffect, useState } from 'react';
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer,
 } from 'recharts';
@@ -23,40 +22,39 @@ function Dashboard() {
     })
       .then(res => res.json())
       .then(data => setLogs(data))
-      .catch(err => console.error(err));
+      .catch(console.error);
 
     fetch('http://localhost:3001/cocktails')
       .then(res => res.json())
-      .then(data => setCocktails(data))
-      .catch(err => console.error(err));
+      .then(setCocktails)
+      .catch(console.error);
 
     fetch('http://localhost:3001/drinks')
       .then(res => res.json())
-      .then(data => setDrinks(data))
-      .catch(err => console.error(err));
+      .then(setDrinks)
+      .catch(console.error);
 
     fetch('http://localhost:3001/paketniki/my-paketniki', {
       credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
     })
       .then(res => res.json())
-      .then(data => setPaketniki(data))
-      .catch(err => console.error(err));
+      .then(setPaketniki)
+      .catch(console.error);
   };
 
-  function getStartOfWeek(date) {
+  const getStartOfWeek = (date) => {
     const d = new Date(date);
     const day = d.getDay();
     d.setHours(0, 0, 0, 0);
     d.setDate(d.getDate() - day);
     return d;
-  }
+  };
 
-  function getWeeklyData(logs) {
+  const getWeeklyData = (logs) => {
     const startOfWeek = getStartOfWeek(new Date());
     const counts = Array(7).fill(0);
-
-    logs.forEach(log => {
+    logs.forEach((log) => {
       const logDate = new Date(log.dateTime);
       if (logDate >= startOfWeek) {
         const diffDays = Math.floor((logDate - startOfWeek) / (1000 * 60 * 60 * 24));
@@ -65,25 +63,16 @@ function Dashboard() {
         }
       }
     });
-
     const dayNames = ['Ned', 'Pon', 'Tor', 'Sre', 'Čet', 'Pet', 'Sob'];
-
-    return counts.map((count, index) => ({
-      day: dayNames[index],
-      count,
-    }));
-  }
+    return counts.map((count, index) => ({ day: dayNames[index], count }));
+  };
 
   const weeklyData = getWeeklyData(logs);
 
   const deleteCocktail = async (id) => {
     try {
       const res = await fetch(`http://localhost:3001/cocktails/${id}`, { method: 'DELETE' });
-      if (res.ok) {
-        fetchData();
-      } else {
-        console.error('Napaka pri brisanju koktejla.');
-      }
+      if (res.ok) fetchData();
     } catch (err) {
       console.error(err);
     }
@@ -92,11 +81,7 @@ function Dashboard() {
   const deleteDrink = async (id) => {
     try {
       const res = await fetch(`http://localhost:3001/drinks/${id}`, { method: 'DELETE' });
-      if (res.ok) {
-        fetchData();
-      } else {
-        console.error('Napaka pri brisanju pijače.');
-      }
+      if (res.ok) fetchData();
     } catch (err) {
       console.error(err);
     }
@@ -104,14 +89,8 @@ function Dashboard() {
 
   const deletePaketnik = async (id) => {
     try {
-      const res = await fetch(`http://localhost:3001/paketniki/${id}`, {
-        method: 'DELETE',
-      });
-      if (res.ok) {
-        fetchData();
-      } else {
-        console.error('Napaka pri brisanju paketnika.');
-      }
+      const res = await fetch(`http://localhost:3001/paketniki/${id}`, { method: 'DELETE' });
+      if (res.ok) fetchData();
     } catch (err) {
       console.error(err);
     }
@@ -121,136 +100,87 @@ function Dashboard() {
     <div className="container py-5">
       <h1 className="text-3xl font-bold mb-12 text-center text-orange-500">CocktailBox Admin Dashboard</h1>
 
-      {/* Tables */}
+      {/* Seznam koktejlov */}
       <div className="mb-20">
-        {/* Cocktails */}
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold text-orange-500">Seznam koktejlov</h2>
-          <button 
-            className="btn btn-warning"
-            onClick={() => navigate('/add-cocktail')}>
-            ➕ Dodaj nov koktejl
-          </button>
+          <button className="btn btn-warning" onClick={() => navigate('/add-cocktail')}>➕ Dodaj nov koktejl</button>
         </div>
         <table className="table table-striped w-full mb-16">
           <thead>
-            <tr>
-              <th>Ime</th>
-              <th>Cena (€)</th>
-              <th>Akcije</th>
-            </tr>
+            <tr><th>Ime</th><th>Cena (€)</th><th>Akcije</th></tr>
           </thead>
           <tbody>
-            {cocktails.map(cocktail => (
-              <tr key={cocktail._id}>
-                <td>{cocktail.name}</td>
-                <td>{cocktail.price?.toFixed(2)}</td>
-                <td>
-                  <button className="btn btn-danger btn-sm" onClick={() => deleteCocktail(cocktail._id)}>
-                    Briši
-                  </button>
-                </td>
+            {cocktails.map((c) => (
+              <tr key={c._id}>
+                <td>{c.name}</td>
+                <td>{c.price?.toFixed(2)}</td>
+                <td><button className="btn btn-danger btn-sm" onClick={() => deleteCocktail(c._id)}>Briši</button></td>
               </tr>
             ))}
           </tbody>
         </table>
 
-        {/* Drinks */}
+        {/* Seznam pijač */}
         <div className="flex justify-between items-center mb-6 mt-20">
           <h2 className="text-2xl font-bold text-orange-500">Seznam pijač</h2>
-          <button 
-            className="btn btn-warning"
-            onClick={() => navigate('/add-drink')}>
-            ➕ Dodaj novo pijačo
-          </button>
+          <button className="btn btn-warning" onClick={() => navigate('/add-drink')}>➕ Dodaj novo pijačo</button>
         </div>
         <table className="table table-striped w-full mb-20">
           <thead>
-            <tr>
-              <th>Ime</th>
-              <th>Tip</th>
-              <th>Cena (€)</th>
-              <th>Akcije</th>
-            </tr>
+            <tr><th>Ime</th><th>Tip</th><th>Cena (€)</th><th>Akcije</th></tr>
           </thead>
           <tbody>
-            {drinks.map(drink => (
-              <tr key={drink._id}>
-                <td>{drink.name}</td>
-                <td>{drink.type}</td>
-                <td>{drink.price?.toFixed(2)}</td>
-                <td>
-                  <button className="btn btn-danger btn-sm" onClick={() => deleteDrink(drink._id)}>
-                    Briši
-                  </button>
-                </td>
+            {drinks.map((d) => (
+              <tr key={d._id}>
+                <td>{d.name}</td>
+                <td>{d.type}</td>
+                <td>{d.price?.toFixed(2)}</td>
+                <td><button className="btn btn-danger btn-sm" onClick={() => deleteDrink(d._id)}>Briši</button></td>
               </tr>
             ))}
           </tbody>
         </table>
 
-        {/* Paketniki */}
+        {/* Seznam paketnikov */}
         <div className="flex justify-between items-center mb-6 mt-20">
           <h2 className="text-2xl font-bold text-orange-500">Seznam paketnikov</h2>
-          <button 
-            className="btn btn-warning"
-            onClick={() => navigate('/add-paketnik')}>
-            ➕ Dodaj nov paketnik
-          </button>
+          <button className="btn btn-warning" onClick={() => navigate('/add-paketnik')}>➕ Dodaj nov paketnik</button>
         </div>
         <table className="table table-striped w-full mb-20">
           <thead>
-            <tr>
-              <th>Številka</th>
-              <th>Lokacija</th>
-              <th>Status</th>
-              <th>Akcije</th>
-            </tr>
+            <tr><th>Številka</th><th>Lokacija</th><th>Status</th><th>Akcije</th></tr>
           </thead>
           <tbody>
-            {paketniki.map(paketnik => (
-              <tr key={paketnik._id}>
-                <td>{paketnik.number}</td>
-                <td>{paketnik.location}</td>
-                <td>{paketnik.status}</td>
-                <td>
-                  <button className="btn btn-danger btn-sm" onClick={() => deletePaketnik(paketnik._id)}>
-                    Briši
-                  </button>
-                </td>
+            {paketniki.map((p) => (
+              <tr key={p._id}>
+                <td>{p.number}</td>
+                <td>{p.location}</td>
+                <td>{p.status}</td>
+                <td><button className="btn btn-danger btn-sm" onClick={() => deletePaketnik(p._id)}>Briši</button></td>
               </tr>
             ))}
           </tbody>
         </table>
 
-        {/* Paketnik Logs */}
+        {/* Logi paketnikov */}
         <div className="mt-20">
           <h2 className="text-2xl font-bold text-orange-500 mb-6">Logi paketnikov</h2>
           {paketniki.length > 0 ? (
             <table className="table table-striped w-full">
-              <thead>
-                <tr>
-                  <th>Številka Paketnika</th>
-                  <th>Datum</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
+              <thead><tr><th>Številka Paketnika</th><th>Datum</th><th>Status</th></tr></thead>
               <tbody>
-                {paketniki.flatMap(paketnik => (
-                  paketnik.open_logs.map((log, index) => (
-                    <tr key={`${paketnik._id}-${index}`}>
-                      <td>{paketnik.number}</td>
+                {paketniki.flatMap((p) =>
+                  p.open_logs.map((log, i) => (
+                    <tr key={`${p._id}-${i}`}>
+                      <td>{p.number}</td>
                       <td>{new Date(log.dateTime).toLocaleString()}</td>
-                      <td style={{
-                        color: log.status === 'failed' ? 'red' :
-                              log.status === 'opened' ? 'green' :
-                              'gray'
-                      }}>
+                      <td style={{ color: log.status === 'failed' ? 'red' : log.status === 'opened' ? 'green' : 'gray' }}>
                         {log.status}
                       </td>
                     </tr>
                   ))
-                ))}
+                )}
               </tbody>
             </table>
           ) : (
@@ -259,17 +189,14 @@ function Dashboard() {
         </div>
       </div>
 
-      {/* Logs Section */}
+      {/* Prijave in graf */}
       <div className="grid md:grid-cols-2 gap-20">
-        {/* Login Logs List */}
         <div className="bg-white p-8 rounded-lg shadow-lg">
           <h2 className="text-2xl font-bold mb-8 text-orange-500">Prijave</h2>
           {logs.length > 0 ? (
             <ul className="space-y-3">
-              {logs.map((log, index) => (
-                <li key={index} className="text-gray-700">
-                  {new Date(log.dateTime).toLocaleString()}
-                </li>
+              {logs.map((log, i) => (
+                <li key={i} className="text-gray-700">{new Date(log.dateTime).toLocaleString()}</li>
               ))}
             </ul>
           ) : (
@@ -284,10 +211,7 @@ function Dashboard() {
               <CartesianGrid strokeDasharray="3 3" stroke="#eee" />
               <XAxis dataKey="day" stroke="#8884d8" />
               <YAxis allowDecimals={false} stroke="#8884d8" />
-              <Tooltip
-                contentStyle={{ backgroundColor: '#fff', borderColor: '#ccc' }}
-                itemStyle={{ color: '#333' }}
-              />
+              <Tooltip contentStyle={{ backgroundColor: '#fff', borderColor: '#ccc' }} itemStyle={{ color: '#333' }} />
               <Bar dataKey="count" fill="#FF7A00" />
             </BarChart>
           </ResponsiveContainer>
