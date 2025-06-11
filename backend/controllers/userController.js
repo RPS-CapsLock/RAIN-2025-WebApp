@@ -2,10 +2,14 @@ var UserModel = require('../models/userModel.js');
 const fs = require('fs');
 const path = require('path');
 const axios = require('axios');
-const admin = require('../firebase');
+let admin = null;
+if (process.env.NODE_ENV !== 'test') {
+  admin = require('../firebase');
+}
 
-//const PyAPI = "http://localhost:5000"
-const PyAPI = "http://host.docker.internal:5000"
+
+const PyAPI = "http://localhost:5000"
+//const PyAPI = "http://host.docker.internal:5000"
 
 //man
 
