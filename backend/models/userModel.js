@@ -6,6 +6,7 @@ var userSchema = new Schema({
 	'username' : String,
 	'password' : String,
 	'email' : String,
+	'profileImage' : String,
   	'_2FA' : { type: Boolean, default: false},
 	'fcmToken' : { type: String, default: ""},
 	'owner': { type: Boolean, default: false },

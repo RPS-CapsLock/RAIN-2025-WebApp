@@ -2,11 +2,12 @@ var UserModel = require('../models/userModel.js');
 const fs = require('fs');
 const path = require('path');
 const axios = require('axios');
+
 let admin = null;
 if (process.env.NODE_ENV !== 'test') {
   admin = require('../firebase');
 }
-
+const { compressImage } = require('../utils/compressor');
 
 const PyAPI = "http://localhost:5000"
 //const PyAPI = "http://host.docker.internal:5000"
@@ -437,6 +438,33 @@ module.exports = {
             err.status = 401;
             return next(err);
         }
+    },
+
+    create: async function (req, res) {
+        try {
+            const user = new UserModel({
+                username: req.body.username,
+                password: req.body.password,
+                email: req.body.email,
+                _2FA: req.body._2FA
+            });
+
+            if (req.body.image) {
+                const base64Data = req.body.image.replace(/^data:image\/\w+;base64,/, "");
+                const tempPath = path.join(__dirname, `../temp_${user._id}.jpg`);
+                const binFileName = `user_${user._id}.bin`;
+                const binPath = path.join(__dirname, `../public/compressed/${binFileName}`);
+
+                fs.writeFileSync(tempPath, base64Data, 'base64');
+                await compressImage(tempPath, binPath, 15); 
+                user.profileImage = binFileName;
+                fs.unlinkSync(tempPath);
+            }
+
+            await user.save();
+            return res.status(201).json(user);
+        } catch (err) {
+            return next(err);
+        }
     }
-    
 };

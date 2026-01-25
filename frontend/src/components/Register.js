@@ -4,7 +4,17 @@ function Register() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
+  const [image, setImage] = useState(null);
   const [error, setError] = useState("");
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setImage(reader.result);
+    };
+    if (file) reader.readAsDataURL(file);
+  };
 
   async function handleRegister(e) {
     e.preventDefault();
@@ -16,7 +26,8 @@ function Register() {
         email: email,
         username: username,
         password: password,
-        _2FA: false
+        _2FA: false,
+        image: image
       })
     });
     const data = await res.json();
@@ -71,6 +82,16 @@ function Register() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
+                />
+              </div>
+              <div className="mb-3">
+                <label className="form-label">Profilna slika</label>
+                <input 
+                  type="file" 
+                  className="form-control" 
+                  accept="image/*"
+                  onChange={handleImageChange}
+                  required 
                 />
               </div>
               {error && <div className="alert alert-danger">{error}</div>}

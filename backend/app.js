@@ -75,6 +75,11 @@ app.use('/cocktails', cocktailRoutes);
 app.use('/notifications', notificationRoutes);
 app.use('/faceid', faceidRoutes);
 app.use('/paketniki', paketnikRoutes);
+<<<<<<< Updated upstream
+=======
+app.use('/cart', cartRoutes);
+app.use('/files', express.static('public/compressed'));
+>>>>>>> Stashed changes
 
 app.use(function(req, res, next) {
   next(createError(404));

@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from 'react';
 import { UserContext } from '../userContext';
 import { Navigate, useNavigate } from 'react-router-dom';
+import DCTImage from './DCTImage';
 
 function Profile() {
   const userContext = useContext(UserContext); 
@@ -48,6 +49,13 @@ function Profile() {
           <div className="col-md-6">
             <div className="card shadow p-4">
               <h3 className="text-center mb-4" style={{ color: "#FF7A00" }}>Profil uporabnika</h3>
+              <div className="mb-4 d-flex justify-content-center">
+                {profile.profileImage ? (
+                  <DCTImage binFileUrl={`http://localhost:3001/files/${profile.profileImage}`} />
+                ) : (
+                  <div className="bg-light rounded-circle" style={{width: 150, height: 150}}>Nalaganje slike...</div>
+                )}
+              </div>
               <div className="text-gray-800 mb-4">
                 <div className="d-flex justify-content-between border-bottom pb-2 mb-2">
                   <span className="fw-bold">Uporabniško ime:</span>

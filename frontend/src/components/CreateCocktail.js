@@ -37,7 +37,7 @@ function CreateCocktail() {
     const newCocktail = {
       name: `${alcoholDrink.name} & ${nonAlcoholDrink.name}`,
       ingredients: [alcoholDrink._id, nonAlcoholDrink._id],
-      image: '/images/custom-cocktail.png',
+      image: 'https://www.shutterstock.com/image-vector/set-retro-cartoon-drink-characters-600nw-2429527647.jpg',
       price: price,
       custom: true
     };
